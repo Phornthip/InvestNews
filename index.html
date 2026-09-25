@@ -687,7 +687,6 @@
       </div>
 
       <nav class="menu">
-        <button class="menu-button active">ภาพรวมข่าว</button>
         <button class="menu-button">ข่าวล่าสุด</button>
         <button class="menu-button">หุ้นที่ติดตาม</button>
         <button class="menu-button" id="sidebarReportButton">รายงานประจำวัน</button>
@@ -1305,16 +1304,6 @@
           dateStyle: "full",
           timeStyle: "short"
         }).format(new Date());
-
-      document.getElementById("reportOverview").innerHTML = `
-        <li>ตรวจพบข่าว ${totalArticles} รายการ</li>
-        <li>จัดกลุ่มเป็น ${newsData.length} เหตุการณ์</li>
-        <li>พบข่าวสำคัญ ${
-          newsData.filter((news) => news.important).length
-        } เหตุการณ์</li>
-      `;
-
-      const importantItems = newsData.filter((news) => news.important);
 
       document.getElementById("reportImportant").innerHTML =
         importantItems.length
