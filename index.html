@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>InvestNews — ข่าวการลงทุนหลายแหล่ง</title>
 
+  <!-- นำเข้า LINE LIFF SDK -->
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+
   <style>
     :root {
       --bg: #0b0f0e;
@@ -772,12 +775,16 @@
     </main>
   </div>
 
+  <!-- Modal รายงานประจำวัน พร้อมปุ่มแชร์ LINE -->
   <div class="modal-backdrop" id="reportModal">
     <div class="modal">
       <div class="modal-header">
         <h2>รายงานข่าวการลงทุนประจำวัน</h2>
         <button class="close-button" id="closeModalButton">✕</button>
       </div>
+
+      <!-- ส่วนแสดงผลสถานะโปรไฟล์ LIFF -->
+      <div id="hello" style="margin-bottom: 12px; font-size: 13px; color: var(--primary); font-weight: 600;"></div>
 
       <p id="reportDate"></p>
 
@@ -796,6 +803,13 @@
         <ul id="reportWatchlist"></ul>
       </section>
 
+      <!-- ปุ่มแชร์ไปที่ LINE -->
+      <div class="report-section" style="padding-top: 14px;">
+        <button class="primary-button full-width" id="shareLineButton" style="background-color: #06C755; border-color: #06C755; color: #ffffff;">
+          💬 แชร์รายงานนี้ไปที่ LINE
+        </button>
+      </div>
+
       <div class="disclaimer">
         ข้อมูลนี้จัดทำขึ้นเพื่อสาธิตระบบรวบรวมข่าวเท่านั้น
         ไม่ใช่คำแนะนำในการซื้อหรือขายหลักทรัพย์
@@ -804,6 +818,24 @@
   </div>
 
   <script>
+    // --- ส่วน LIFF Initialization (อัปเดต LIFF ID ใหม่แล้ว) ---
+    var LIFF_ID = '2011744697-Oz27SBaf';
+    (function(){
+      try{
+        liff.init({liffId:LIFF_ID}).then(function(){
+          if(liff.isLoggedIn()){
+            liff.getProfile().then(function(pf){
+              const helloEl = document.getElementById('hello');
+              if(helloEl) {
+                helloEl.textContent = 'สวัสดี ' + pf.displayName + ' - รายงานข่าวการลงทุนประจำวัน';
+              }
+            });
+          }
+        }).catch(function(){});
+      }catch(e){}
+    })();
+
+    // --- ข้อมูลข่าวจำลอง ---
     const newsData = [
       {
         id: 1,
@@ -962,6 +994,89 @@
         .replaceAll("'", "&#039;");
     }
 
+    // --- ฟังก์ชันกดปุ่มแชร์ไปที่ LINE เป็น Flex Message ---
+    document.getElementById('shareLineButton').addEventListener('click', function() {
+      try {
+        if (!liff.isLoggedIn()) {
+          liff.login();
+          return;
+        }
+
+        const dateText = document.getElementById('reportDate').textContent;
+        
+        // สร้างโครงสร้าง Flex Message
+        const flexMessage = {
+          type: 'flex',
+          altText: 'รายงานข่าวการลงทุนประจำวัน - InvestNews',
+          contents: {
+            type: 'bubble',
+            header: {
+              type: 'box',
+              layout: 'vertical',
+              backgroundColor: '#141C18',
+              paddingAll: '16px',
+              contents: [
+                { type: 'text', text: 'INVESTNEWS REPORT', size: 'xxs', color: '#10B981', weight: 'bold' },
+                { type: 'text', text: 'รายงานข่าวการลงทุนประจำวัน', size: 'md', color: '#FFFFFF', weight: 'bold', margin: 'sm' },
+                { type: 'text', text: dateText, size: 'xxs', color: '#9AA3B2', margin: 'xs' }
+              ]
+            },
+            body: {
+              type: 'box',
+              layout: 'vertical',
+              paddingAll: '16px',
+              backgroundColor: '#0B0F0E',
+              contents: [
+                {
+                  type: 'text',
+                  text: '📊 กดเพื่อเปิดดูรายละเอียดและสรุปข่าวสารการลงทุนล่าสุดผ่านระบบ',
+                  weight: 'bold',
+                  size: 'sm',
+                  color: '#F0F4F1',
+                  wrap: true
+                }
+              ],              
+              action: {
+                type: 'uri',
+                label: 'Open LIFF',
+                uri: 'https://liff.line.me/2011744697-Oz27SBaf'
+              }
+            },
+            footer: {
+              type: 'box',
+              layout: 'vertical',
+              backgroundColor: '#141C18',
+              paddingAll: '10px',
+              contents: [
+                { 
+                  type: 'text', 
+                  text: 'ข้อมูลนี้ไม่ใช่คำแนะนำในการซื้อหรือขายหลักทรัพย์', 
+                  size: 'xxs', 
+                  color: '#9AA3B2', 
+                  align: 'center', 
+                  wrap: true 
+                }
+              ]
+            }
+          }
+        };
+
+        if (liff.isApiAvailable('shareTargetPicker')) {
+          liff.shareTargetPicker([flexMessage]).then(function(res) {
+            if (res) {
+              alert('แชร์รายงานไปยัง LINE สำเร็จแล้ว!');
+            }
+          }).catch(function(error) {
+            alert('เกิดข้อผิดพลาดในการแชร์: ' + error);
+          });
+        } else {
+          alert('เบราว์เซอร์นี้ไม่รองรับฟังก์ชัน ShareTargetPicker กรุณาเปิดผ่านแอปพลิเคชัน LINE');
+        }
+      } catch (err) {
+        alert('กรุณาเข้าสู่ระบบผ่าน LINE ก่อนทำการแชร์');
+      }
+    });
+    
     function getFilteredNews() {
       return newsData.filter((news) => {
         const matchesCategory =
@@ -1244,6 +1359,40 @@
     function closeReport() {
       document.getElementById("reportModal").classList.remove("open");
     }
+
+    // --- ฟังก์ชันกดปุ่มแชร์ไปที่ LINE ผ่าน ShareTargetPicker ---
+    document.getElementById('shareLineButton').addEventListener('click', function() {
+      try {
+        if (!liff.isLoggedIn()) {
+          liff.login();
+          return;
+        }
+
+        const dateText = document.getElementById('reportDate').textContent;
+        const overviewText = document.getElementById('reportOverview').innerText;
+        
+        const shareMessage = `📢 สรุปรายงานข่าวการลงทุนประจำวัน\n📅 ${dateText}\n\n${overviewText}\n\n-- จัดทำโดย InvestNews --`;
+
+        if (liff.isApiAvailable('shareTargetPicker')) {
+          liff.shareTargetPicker([
+            {
+              type: 'text',
+              text: shareMessage
+            }
+          ]).then(function(res) {
+            if (res) {
+              alert('แชร์รายงานไปยัง LINE สำเร็จแล้ว!');
+            }
+          }).catch(function(error) {
+            alert('เกิดข้อผิดพลาดในการแชร์: ' + error);
+          });
+        } else {
+          alert('เบราว์เซอร์นี้ไม่รองรับฟังก์ชัน ShareTargetPicker กรุณาเปิดผ่านแอปพลิเคชัน LINE');
+        }
+      } catch (err) {
+        alert('กรุณาเข้าสู่ระบบผ่าน LINE ก่อนทำการแชร์');
+      }
+    });
 
     searchInput.addEventListener("input", (event) => {
       searchText = event.target.value;
