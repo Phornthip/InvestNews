@@ -812,7 +812,7 @@
   </div>
 
   <script>
-    // --- ส่วน LIFF Initialization (อัปเดต LIFF ID ใหม่แล้ว) ---
+    // --- ส่วน LIFF Initialization ---
     var LIFF_ID = '2011744697-Oz27SBaf';
     (function(){
       try{
@@ -988,7 +988,7 @@
         .replaceAll("'", "&#039;");
     }
 
-    // --- ฟังก์ชันกดปุ่มแชร์ไปที่ LINE เป็น Flex Message ---
+    // --- ฟังก์ชันกดปุ่มแชร์ไปที่ LINE เป็น Flex Message (กดที่กล่องแล้วเปิด LIFF) ---
     document.getElementById('shareLineButton').addEventListener('click', function() {
       try {
         if (!liff.isLoggedIn()) {
@@ -998,7 +998,7 @@
 
         const dateText = document.getElementById('reportDate').textContent;
         
-        // สร้างโครงสร้าง Flex Message
+        // สร้างโครงสร้าง Flex Message พร้อม Action เปิด LIFF
         const flexMessage = {
           type: 'flex',
           altText: 'รายงานข่าวการลงทุนประจำวัน - InvestNews',
@@ -1029,7 +1029,7 @@
                   color: '#F0F4F1',
                   wrap: true
                 }
-              ],              
+              ],
               action: {
                 type: 'uri',
                 label: 'Open LIFF',
@@ -1294,16 +1294,14 @@
     }
 
     function openReport() {
-      const totalArticles = newsData.reduce(
-        (sum, news) => sum + news.sources.length,
-        0
-      );
-
       document.getElementById("reportDate").textContent =
         new Intl.DateTimeFormat("th-TH", {
           dateStyle: "full",
           timeStyle: "short"
         }).format(new Date());
+
+      // ประกาศตัวแปร importantItems ก่อนใช้งานจริง
+      const importantItems = newsData.filter((news) => news.important);
 
       document.getElementById("reportImportant").innerHTML =
         importantItems.length
@@ -1343,40 +1341,6 @@
     function closeReport() {
       document.getElementById("reportModal").classList.remove("open");
     }
-
-    // --- ฟังก์ชันกดปุ่มแชร์ไปที่ LINE ผ่าน ShareTargetPicker ---
-    document.getElementById('shareLineButton').addEventListener('click', function() {
-      try {
-        if (!liff.isLoggedIn()) {
-          liff.login();
-          return;
-        }
-
-        const dateText = document.getElementById('reportDate').textContent;
-        const overviewText = document.getElementById('reportOverview').innerText;
-        
-        const shareMessage = `📢 สรุปรายงานข่าวการลงทุนประจำวัน\n📅 ${dateText}\n\n${overviewText}\n\n-- จัดทำโดย InvestNews --`;
-
-        if (liff.isApiAvailable('shareTargetPicker')) {
-          liff.shareTargetPicker([
-            {
-              type: 'text',
-              text: shareMessage
-            }
-          ]).then(function(res) {
-            if (res) {
-              alert('แชร์รายงานไปยัง LINE สำเร็จแล้ว!');
-            }
-          }).catch(function(error) {
-            alert('เกิดข้อผิดพลาดในการแชร์: ' + error);
-          });
-        } else {
-          alert('เบราว์เซอร์นี้ไม่รองรับฟังก์ชัน ShareTargetPicker กรุณาเปิดผ่านแอปพลิเคชัน LINE');
-        }
-      } catch (err) {
-        alert('กรุณาเข้าสู่ระบบผ่าน LINE ก่อนทำการแชร์');
-      }
-    });
 
     searchInput.addEventListener("input", (event) => {
       searchText = event.target.value;
