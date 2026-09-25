@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InvestNews — ข่าวการลงทุนหลายแหล่ง</title>
+
+  <style>
+    :root {
+      --bg: #0b0f0e;
+      --surface: #141c18;
+      --surface-soft: #1b2621;
+      --text: #f0f4f1;
+      --muted: #9aa8a0;
+      --primary: #10b981;
+      --primary-dark: #059669;
+      --primary-soft: rgba(16, 185, 129, 0.15);
+      --border: #24332b;
+      --warning: #fbbf24;
+      --warning-soft: rgba(251, 191, 36, 0.15);
+      --shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        "Noto Sans Thai", sans-serif;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 250px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 24px 18px;
+      color: #ffffff;
+      background: #080c0a;
+      border-right: 1px solid var(--border);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 32px;
+      padding: 0 8px;
+    }
+
+    .brand-logo {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 13px;
+      font-weight: 800;
+      color: #0b0f0e;
+      background: var(--primary);
+    }
+
+    .brand-name {
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .brand-subtitle {
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .menu {
+      display: grid;
+      gap: 7px;
+    }
+
+    .menu-button {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 12px 14px;
+      border: 0;
+      border-radius: 12px;
+      color: var(--muted);
+      text-align: left;
+      background: transparent;
+      transition: all 0.2s;
+    }
+
+    .menu-button:hover,
+    .menu-button.active {
+      color: #ffffff;
+      background: var(--surface-soft);
+    }
+
+    .sidebar-note {
+      position: absolute;
+      right: 18px;
+      bottom: 24px;
+      left: 18px;
+      padding: 15px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      color: var(--muted);
+      background: var(--surface);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .main {
+      min-width: 0;
+    }
+
+    .topbar {
+      position: sticky;
+      z-index: 10;
+      top: 0;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 18px 30px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(11, 15, 14, 0.85);
+      backdrop-filter: blur(12px);
+    }
+
+    .search-box {
+      position: relative;
+      flex: 1;
+      max-width: 720px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 13px 16px 13px 44px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      outline: none;
+      color: var(--text);
+      background: var(--surface);
+      transition: all 0.2s;
+    }
+
+    .search-box input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+    }
+
+    .search-icon {
+      position: absolute;
+      top: 50%;
+      left: 16px;
+      transform: translateY(-50%);
+      color: var(--muted);
+    }
+
+    .primary-button,
+    .secondary-button {
+      padding: 11px 16px;
+      border-radius: 12px;
+      font-weight: 700;
+      transition: all 0.2s;
+    }
+
+    .primary-button {
+      border: 1px solid var(--primary);
+      color: #0b0f0e;
+      background: var(--primary);
+    }
+
+    .primary-button:hover {
+      background: #059669;
+    }
+
+    .secondary-button {
+      border: 1px solid var(--border);
+      color: var(--text);
+      background: var(--surface);
+    }
+
+    .secondary-button:hover {
+      background: var(--surface-soft);
+    }
+
+    .content {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 30px;
+    }
+
+    .hero {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(25px, 4vw, 36px);
+      letter-spacing: -0.5px;
+    }
+
+    .hero p {
+      margin: 8px 0 0;
+      color: var(--muted);
+    }
+
+    .update-status {
+      white-space: nowrap;
+      padding: 9px 15px;
+      border-radius: 999px;
+      color: var(--primary);
+      background: var(--primary-soft);
+      font-size: 13px;
+      font-weight: 700;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      margin-right: 6px;
+      border-radius: 50%;
+      background: var(--primary);
+      box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2);
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 300px;
+      gap: 24px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .stat-number {
+      margin-top: 6px;
+      font-size: 26px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-bottom: 18px;
+    }
+
+    .filter-button {
+      padding: 8px 14px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--muted);
+      background: var(--surface);
+      transition: all 0.2s;
+    }
+
+    .filter-button:hover,
+    .filter-button.active {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: var(--primary-soft);
+    }
+
+    .news-list {
+      display: grid;
+      gap: 16px;
+    }
+
+    .news-group {
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .news-header {
+      display: flex;
+      gap: 16px;
+      padding: 20px;
+    }
+
+    .symbol {
+      display: grid;
+      flex: 0 0 54px;
+      place-items: center;
+      width: 54px;
+      height: 54px;
+      border-radius: 15px;
+      color: var(--primary);
+      background: var(--primary-soft);
+      font-size: 13px;
+      font-weight: 900;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .news-heading {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .news-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 7px;
+    }
+
+    .tag {
+      padding: 4px 10px;
+      border-radius: 7px;
+      color: var(--primary);
+      background: var(--primary-soft);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .important-tag {
+      color: var(--warning);
+      background: var(--warning-soft);
+    }
+
+    .news-title {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.45;
+      color: #ffffff;
+    }
+
+    .news-summary {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .watch-button {
+      flex: 0 0 auto;
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--muted);
+      background: var(--surface-soft);
+      font-size: 19px;
+      transition: all 0.2s;
+    }
+
+    .watch-button.saved {
+      border-color: #fbbf24;
+      color: #fbbf24;
+      background: rgba(251, 191, 36, 0.15);
+    }
+
+    .source-list {
+      border-top: 1px solid var(--border);
+      background: var(--surface-soft);
+    }
+
+    .source-item {
+      display: grid;
+      grid-template-columns: 150px minmax(0, 1fr) 85px;
+      gap: 14px;
+      align-items: center;
+      padding: 15px 20px;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s;
+    }
+
+    .source-item:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .source-item:last-child {
+      border-bottom: 0;
+    }
+
+    .source-name {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 800;
+      color: #d1d5db;
+    }
+
+    .source-logo {
+      display: grid;
+      place-items: center;
+      width: 27px;
+      height: 27px;
+      border-radius: 8px;
+      color: #ffffff;
+      background: var(--primary-dark);
+      font-size: 10px;
+    }
+
+    .source-headline {
+      overflow: hidden;
+      color: #9ca3af;
+      font-size: 14px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .source-time {
+      color: var(--muted);
+      font-size: 12px;
+      text-align: right;
+    }
+
+    .side-panel {
+      display: grid;
+      align-content: start;
+      gap: 18px;
+    }
+
+    .panel {
+      padding: 19px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .panel h2 {
+      margin: 0 0 14px;
+      font-size: 17px;
+      color: #ffffff;
+    }
+
+    .watchlist {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .stock-chip {
+      padding: 7px 12px;
+      border-radius: 9px;
+      color: var(--primary);
+      background: var(--primary-soft);
+      font-size: 12px;
+      font-weight: 800;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .empty-text {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .topic-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .topic-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: #d1d5db;
+      font-size: 14px;
+    }
+
+    .topic-count {
+      color: var(--muted);
+    }
+
+    .report-time {
+      margin-bottom: 14px;
+      padding: 13px;
+      border-radius: 12px;
+      color: var(--primary);
+      background: var(--primary-soft);
+      font-size: 13px;
+      line-height: 1.6;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .full-width {
+      width: 100%;
+    }
+
+    .empty-result {
+      padding: 50px 20px;
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+      color: var(--muted);
+      text-align: center;
+      background: var(--surface);
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      z-index: 50;
+      inset: 0;
+      display: none;
+      place-items: center;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+    }
+
+    .modal-backdrop.open {
+      display: grid;
+    }
+
+    .modal {
+      width: min(650px, 100%);
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 24px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.7);
+      color: var(--text);
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      color: #ffffff;
+    }
+
+    .close-button {
+      width: 38px;
+      height: 38px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface-soft);
+      color: var(--text);
+    }
+
+    .report-section {
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
+    }
+
+    .report-section h3 {
+      margin: 0 0 10px;
+      font-size: 16px;
+      color: #ffffff;
+    }
+
+    .report-section ul {
+      margin: 0;
+      padding-left: 20px;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .disclaimer {
+      margin-top: 20px;
+      padding: 12px;
+      border-radius: 10px;
+      color: var(--muted);
+      background: var(--surface-soft);
+      font-size: 12px;
+      line-height: 1.6;
+      border: 1px solid var(--border);
+    }
+
+    @media (max-width: 980px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        display: none;
+      }
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
+      .side-panel {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 720px) {
+      .topbar {
+        flex-wrap: wrap;
+        padding: 14px 16px;
+      }
+      .search-box {
+        flex-basis: 100%;
+        order: 2;
+      }
+      .content {
+        padding: 20px 16px;
+      }
+      .hero {
+        display: block;
+      }
+      .update-status {
+        display: inline-block;
+        margin-top: 14px;
+      }
+      .stats,
+      .side-panel {
+        grid-template-columns: 1fr;
+      }
+      .source-item {
+        grid-template-columns: 1fr auto;
+      }
+      .source-headline {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        white-space: normal;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-logo">IN</div>
+        <div>
+          <div class="brand-name">InvestNews</div>
+          <div class="brand-subtitle">Investment Intelligence</div>
+        </div>
+      </div>
+
+      <nav class="menu">
+        <button class="menu-button active">ภาพรวมข่าว</button>
+        <button class="menu-button">ข่าวล่าสุด</button>
+        <button class="menu-button">หุ้นที่ติดตาม</button>
+        <button class="menu-button" id="sidebarReportButton">รายงานประจำวัน</button>
+        <button class="menu-button">จัดการแหล่งข่าว</button>
+      </nav>
+
+      <div class="sidebar-note">
+        ระบบต้นแบบใช้ข้อมูลจำลอง<br>
+        รอบอัปเดตที่แนะนำ: ทุก 15 นาที<br>
+        รายงานประจำวัน: เวลา 07:00 น.
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="search-box">
+          <span class="search-icon">⌕</span>
+          <input
+            id="searchInput"
+            type="search"
+            placeholder="ค้นหาหุ้น บริษัท หรือหัวข้อข่าว เช่น PTT, ปันผล..."
+          >
+        </div>
+        <button class="secondary-button" id="refreshButton">อัปเดตข่าว</button>
+        <button class="primary-button" id="reportButton">รายงานวันนี้</button>
+      </header>
+
+      <div class="content">
+        <section class="hero">
+          <div>
+            <h1>ข่าวการลงทุนวันนี้</h1>
+            <p>รวบรวมและจัดกลุ่มข่าวเหตุการณ์เดียวกันจากหลายแหล่ง</p>
+          </div>
+          <div class="update-status">
+            <span class="status-dot"></span>
+            <span id="updatedTime">กำลังโหลด...</span>
+          </div>
+        </section>
+
+        <div class="dashboard">
+          <section>
+            <div class="stats">
+              <article class="stat-card">
+                <div class="stat-label">ข่าวทั้งหมดวันนี้</div>
+                <div class="stat-number" id="totalNews">0</div>
+              </article>
+              <article class="stat-card">
+                <div class="stat-label">เหตุการณ์สำคัญ</div>
+                <div class="stat-number" id="importantNews">0</div>
+              </article>
+              <article class="stat-card">
+                <div class="stat-label">แหล่งข่าว</div>
+                <div class="stat-number" id="sourceCount">0</div>
+              </article>
+            </div>
+
+            <div class="filters" id="filters"></div>
+            <div class="news-list" id="newsList"></div>
+          </section>
+
+          <aside class="side-panel">
+            <section class="panel">
+              <h2>หุ้นที่ติดตาม</h2>
+              <div class="watchlist" id="watchlist"></div>
+            </section>
+
+            <section class="panel">
+              <h2>หัวข้อที่มีข่าวมาก</h2>
+              <div class="topic-list" id="topicList"></div>
+            </section>
+
+            <section class="panel">
+              <h2>รายงานอัตโนมัติ</h2>
+              <div class="report-time">
+                จัดทำรายงานทุกวัน<br>
+                เวลา 07:00 น. และ 17:30 น.
+              </div>
+              <button class="primary-button full-width" id="sideReportButton">
+                ดูรายงานล่าสุด
+              </button>
+            </section>
+          </aside>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="reportModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>รายงานข่าวการลงทุนประจำวัน</h2>
+        <button class="close-button" id="closeModalButton">✕</button>
+      </div>
+
+      <p id="reportDate"></p>
+
+      <section class="report-section">
+        <h3>ภาพรวม</h3>
+        <ul id="reportOverview"></ul>
+      </section>
+
+      <section class="report-section">
+        <h3>ข่าวสำคัญ</h3>
+        <ul id="reportImportant"></ul>
+      </section>
+
+      <section class="report-section">
+        <h3>หุ้นที่ติดตาม</h3>
+        <ul id="reportWatchlist"></ul>
+      </section>
+
+      <div class="disclaimer">
+        ข้อมูลนี้จัดทำขึ้นเพื่อสาธิตระบบรวบรวมข่าวเท่านั้น
+        ไม่ใช่คำแนะนำในการซื้อหรือขายหลักทรัพย์
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const newsData = [
+      {
+        id: 1,
+        symbol: "PTT",
+        category: "ซื้อหุ้นคืน",
+        important: true,
+        title: "บอร์ด PTT อนุมัติแผนจำหน่ายหุ้นซื้อคืน",
+        summary:
+          "บริษัทกำหนดช่วงเวลาจำหน่ายหุ้นซื้อคืน พร้อมเปิดเผยรายละเอียดและเงื่อนไขที่เกี่ยวข้อง",
+        keywords: ["PTT", "พลังงาน", "ซื้อหุ้นคืน"],
+        sources: [
+          {
+            name: "InfoQuest",
+            shortName: "IQ",
+            headline: "บอร์ด PTT ไฟเขียวแผนจำหน่ายหุ้นซื้อคืน",
+            time: "10:35 น.",
+            url: "#"
+          },
+          {
+            name: "ตลาดหลักทรัพย์ฯ",
+            shortName: "SET",
+            headline: "รายงานมติคณะกรรมการเกี่ยวกับโครงการหุ้นซื้อคืน",
+            time: "10:22 น.",
+            url: "#"
+          },
+          {
+            name: "ผู้จัดการออนไลน์",
+            shortName: "MGR",
+            headline: "PTT เปิดรายละเอียดการจำหน่ายหุ้นซื้อคืน",
+            time: "09:58 น.",
+            url: "#"
+          }
+        ]
+      },
+      {
+        id: 2,
+        symbol: "ADVANC",
+        category: "ผลประกอบการ",
+        important: true,
+        title: "ADVANC รายงานผลประกอบการเติบโตจากรายได้บริการ",
+        summary:
+          "รายได้บริการโทรศัพท์เคลื่อนที่และอินเทอร์เน็ตสนับสนุนผลประกอบการของบริษัท",
+        keywords: ["ADVANC", "สื่อสาร", "งบการเงิน"],
+        sources: [
+          {
+            name: "สำนักข่าวอีไฟแนนซ์ไทย",
+            shortName: "EF",
+            headline: "ADVANC เปิดผลดำเนินงาน รายได้บริการเติบโต",
+            time: "09:40 น.",
+            url: "#"
+          },
+          {
+            name: "กรุงเทพธุรกิจ",
+            shortName: "BK",
+            headline: "จับตาผลประกอบการ ADVANC และทิศทางธุรกิจ",
+            time: "09:12 น.",
+            url: "#"
+          }
+        ]
+      },
+      {
+        id: 3,
+        symbol: "AOT",
+        category: "ท่องเที่ยว",
+        important: false,
+        title: "AOT รับปริมาณผู้โดยสารเพิ่มตามการฟื้นตัวของการเดินทาง",
+        summary:
+          "จำนวนผู้โดยสารระหว่างประเทศปรับตัวเพิ่มขึ้น ส่งผลเชิงบวกต่อรายได้ที่เกี่ยวข้องกับสนามบิน",
+        keywords: ["AOT", "สนามบิน", "ท่องเที่ยว"],
+        sources: [
+          {
+            name: "ประชาชาติธุรกิจ",
+            shortName: "PC",
+            headline: "ปริมาณผู้โดยสารเพิ่ม หนุนแนวโน้มรายได้ AOT",
+            time: "08:55 น.",
+            url: "#"
+          },
+          {
+            name: "ฐานเศรษฐกิจ",
+            shortName: "TH",
+            headline: "ท่องเที่ยวฟื้นตัว ดันจำนวนผู้ใช้บริการสนามบิน",
+            time: "08:30 น.",
+            url: "#"
+          }
+        ]
+      },
+      {
+        id: 4,
+        symbol: "KBANK",
+        category: "ธนาคาร",
+        important: false,
+        title: "KBANK เดินหน้าขยายบริการดิจิทัลสำหรับลูกค้าธุรกิจ",
+        summary:
+          "ธนาคารเพิ่มความสามารถของช่องทางดิจิทัล เพื่อรองรับธุรกรรมและบริการทางการเงินของภาคธุรกิจ",
+        keywords: ["KBANK", "ธนาคาร", "ดิจิทัล"],
+        sources: [
+          {
+            name: "InfoQuest",
+            shortName: "IQ",
+            headline: "KBANK เปิดแผนยกระดับบริการดิจิทัล",
+            time: "08:15 น.",
+            url: "#"
+          }
+        ]
+      },
+      {
+        id: 5,
+        symbol: "CPALL",
+        category: "ค้าปลีก",
+        important: false,
+        title: "CPALL รับแรงหนุนจากยอดขายและการบริโภคภายในประเทศ",
+        summary:
+          "แนวโน้มยอดขายสาขาเดิมและการบริโภคในประเทศเป็นปัจจัยที่ตลาดติดตาม",
+        keywords: ["CPALL", "ค้าปลีก", "บริโภค"],
+        sources: [
+          {
+            name: "ข่าวหุ้นธุรกิจ",
+            shortName: "KH",
+            headline: "CPALL รับปัจจัยบวกจากยอดขายในประเทศ",
+            time: "07:50 น.",
+            url: "#"
+          },
+          {
+            name: "กรุงเทพธุรกิจ",
+            shortName: "BK",
+            headline: "สำรวจแนวโน้มกลุ่มค้าปลีกและกำลังซื้อ",
+            time: "07:35 น.",
+            url: "#"
+          }
+        ]
+      }
+    ];
+
+    const categories = [
+      "ทั้งหมด",
+      ...new Set(newsData.map((item) => item.category))
+    ];
+
+    let selectedCategory = "ทั้งหมด";
+    let searchText = "";
+    let savedSymbols = JSON.parse(
+      localStorage.getItem("investWatchlist") || '["PTT", "ADVANC"]'
+    );
+
+    const newsListElement = document.getElementById("newsList");
+    const filtersElement = document.getElementById("filters");
+    const watchlistElement = document.getElementById("watchlist");
+    const searchInput = document.getElementById("searchInput");
+
+    function escapeHTML(text) {
+      return String(text)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function getFilteredNews() {
+      return newsData.filter((news) => {
+        const matchesCategory =
+          selectedCategory === "ทั้งหมด" ||
+          news.category === selectedCategory;
+
+        const searchableText = [
+          news.symbol,
+          news.category,
+          news.title,
+          news.summary,
+          ...news.keywords,
+          ...news.sources.map((source) => source.name),
+          ...news.sources.map((source) => source.headline)
+        ]
+          .join(" ")
+          .toLowerCase();
+
+        return (
+          matchesCategory &&
+          searchableText.includes(searchText.trim().toLowerCase())
+        );
+      });
+    }
+
+    function renderFilters() {
+      filtersElement.innerHTML = categories
+        .map(
+          (category) => `
+            <button
+              class="filter-button ${
+                selectedCategory === category ? "active" : ""
+              }"
+              data-category="${escapeHTML(category)}"
+            >
+              ${escapeHTML(category)}
+            </button>
+          `
+        )
+        .join("");
+
+      document.querySelectorAll(".filter-button").forEach((button) => {
+        button.addEventListener("click", () => {
+          selectedCategory = button.dataset.category;
+          renderFilters();
+          renderNews();
+        });
+      });
+    }
+
+    function renderNews() {
+      const filteredNews = getFilteredNews();
+
+      if (!filteredNews.length) {
+        newsListElement.innerHTML = `
+          <div class="empty-result">
+            ไม่พบข่าวที่ตรงกับคำค้นหรือหมวดหมู่ที่เลือก
+          </div>
+        `;
+        return;
+      }
+
+      newsListElement.innerHTML = filteredNews
+        .map((news) => {
+          const isSaved = savedSymbols.includes(news.symbol);
+
+          return `
+            <article class="news-group">
+              <div class="news-header">
+                <div class="symbol">${escapeHTML(news.symbol)}</div>
+
+                <div class="news-heading">
+                  <div class="news-meta">
+                    <span class="tag">${escapeHTML(news.category)}</span>
+                    <span class="tag">
+                      ${news.sources.length} แหล่งข่าว
+                    </span>
+                    ${
+                      news.important
+                        ? '<span class="tag important-tag">ข่าวสำคัญ</span>'
+                        : ""
+                    }
+                  </div>
+
+                  <h2 class="news-title">${escapeHTML(news.title)}</h2>
+                  <p class="news-summary">${escapeHTML(news.summary)}</p>
+                </div>
+
+                <button
+                  class="watch-button ${isSaved ? "saved" : ""}"
+                  data-symbol="${escapeHTML(news.symbol)}"
+                  aria-label="ติดตามหุ้น ${escapeHTML(news.symbol)}"
+                  title="เพิ่มหรือลบหุ้นที่ติดตาม"
+                >
+                  ${isSaved ? "★" : "☆"}
+                </button>
+              </div>
+
+              <div class="source-list">
+                ${news.sources
+                  .map(
+                    (source) => `
+                      <a
+                        class="source-item"
+                        href="${escapeHTML(source.url)}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <div class="source-name">
+                          <span class="source-logo">
+                            ${escapeHTML(source.shortName)}
+                          </span>
+                          ${escapeHTML(source.name)}
+                        </div>
+                        <div class="source-headline">
+                          ${escapeHTML(source.headline)}
+                        </div>
+                        <div class="source-time">
+                          ${escapeHTML(source.time)}
+                        </div>
+                      </a>
+                    `
+                  )
+                  .join("")}
+              </div>
+            </article>
+          `;
+        })
+        .join("");
+
+      document.querySelectorAll(".watch-button").forEach((button) => {
+        button.addEventListener("click", () => {
+          toggleWatchlist(button.dataset.symbol);
+        });
+      });
+    }
+
+    function toggleWatchlist(symbol) {
+      if (savedSymbols.includes(symbol)) {
+        savedSymbols = savedSymbols.filter((item) => item !== symbol);
+      } else {
+        savedSymbols.push(symbol);
+      }
+
+      localStorage.setItem(
+        "investWatchlist",
+        JSON.stringify(savedSymbols)
+      );
+
+      renderNews();
+      renderWatchlist();
+    }
+
+    function renderWatchlist() {
+      if (!savedSymbols.length) {
+        watchlistElement.innerHTML = `
+          <div class="empty-text">
+            ยังไม่มีหุ้นที่ติดตาม กดรูปดาวบนการ์ดข่าวเพื่อเพิ่มหุ้น
+          </div>
+        `;
+        return;
+      }
+
+      watchlistElement.innerHTML = savedSymbols
+        .map(
+          (symbol) => `
+            <span class="stock-chip">${escapeHTML(symbol)}</span>
+          `
+        )
+        .join("");
+    }
+
+    function renderStats() {
+      const totalSources = new Set(
+        newsData.flatMap((news) =>
+          news.sources.map((source) => source.name)
+        )
+      ).size;
+
+      document.getElementById("totalNews").textContent =
+        newsData.reduce((sum, news) => sum + news.sources.length, 0);
+
+      document.getElementById("importantNews").textContent =
+        newsData.filter((news) => news.important).length;
+
+      document.getElementById("sourceCount").textContent = totalSources;
+    }
+
+    function renderTopics() {
+      const categoryCounts = newsData.reduce((result, news) => {
+        result[news.category] = (result[news.category] || 0) + 1;
+        return result;
+      }, {});
+
+      const sortedTopics = Object.entries(categoryCounts).sort(
+        (a, b) => b[1] - a[1]
+      );
+
+      document.getElementById("topicList").innerHTML = sortedTopics
+        .map(
+          ([topic, count]) => `
+            <div class="topic-row">
+              <span>${escapeHTML(topic)}</span>
+              <span class="topic-count">${count} เหตุการณ์</span>
+            </div>
+          `
+        )
+        .join("");
+    }
+
+    function updateTime() {
+      const time = new Intl.DateTimeFormat("th-TH", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+      }).format(new Date());
+
+      document.getElementById(
+        "updatedTime"
+      ).textContent = `อัปเดตล่าสุด ${time} น.`;
+    }
+
+    function openReport() {
+      const totalArticles = newsData.reduce(
+        (sum, news) => sum + news.sources.length,
+        0
+      );
+
+      document.getElementById("reportDate").textContent =
+        new Intl.DateTimeFormat("th-TH", {
+          dateStyle: "full",
+          timeStyle: "short"
+        }).format(new Date());
+
+      document.getElementById("reportOverview").innerHTML = `
+        <li>ตรวจพบข่าว ${totalArticles} รายการ</li>
+        <li>จัดกลุ่มเป็น ${newsData.length} เหตุการณ์</li>
+        <li>พบข่าวสำคัญ ${
+          newsData.filter((news) => news.important).length
+        } เหตุการณ์</li>
+      `;
+
+      const importantItems = newsData.filter((news) => news.important);
+
+      document.getElementById("reportImportant").innerHTML =
+        importantItems.length
+          ? importantItems
+              .map(
+                (news) => `
+                  <li>
+                    <strong>${escapeHTML(news.symbol)}:</strong>
+                    ${escapeHTML(news.title)}
+                  </li>
+                `
+              )
+              .join("")
+          : "<li>ไม่พบข่าวสำคัญ</li>";
+
+      const trackedNews = newsData.filter((news) =>
+        savedSymbols.includes(news.symbol)
+      );
+
+      document.getElementById("reportWatchlist").innerHTML =
+        trackedNews.length
+          ? trackedNews
+              .map(
+                (news) => `
+                  <li>
+                    <strong>${escapeHTML(news.symbol)}:</strong>
+                    ${escapeHTML(news.title)}
+                  </li>
+                `
+              )
+              .join("")
+          : "<li>ไม่พบข่าวใหม่ของหุ้นที่ติดตาม</li>";
+
+      document.getElementById("reportModal").classList.add("open");
+    }
+
+    function closeReport() {
+      document.getElementById("reportModal").classList.remove("open");
+    }
+
+    searchInput.addEventListener("input", (event) => {
+      searchText = event.target.value;
+      renderNews();
+    });
+
+    document.getElementById("refreshButton").addEventListener("click", () => {
+      const button = document.getElementById("refreshButton");
+      button.disabled = true;
+      button.textContent = "กำลังอัปเดต...";
+
+      setTimeout(() => {
+        updateTime();
+        button.disabled = false;
+        button.textContent = "อัปเดตข่าว";
+      }, 700);
+    });
+
+    [
+      "reportButton",
+      "sideReportButton",
+      "sidebarReportButton"
+    ].forEach((id) => {
+      document.getElementById(id).addEventListener("click", openReport);
+    });
+
+    document
+      .getElementById("closeModalButton")
+      .addEventListener("click", closeReport);
+
+    document
+      .getElementById("reportModal")
+      .addEventListener("click", (event) => {
+        if (event.target.id === "reportModal") {
+          closeReport();
+        }
+      });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        closeReport();
+      }
+    });
+
+    renderFilters();
+    renderNews();
+    renderWatchlist();
+    renderStats();
+    renderTopics();
+    updateTime();
+  </script>
+</body>
+</html>
