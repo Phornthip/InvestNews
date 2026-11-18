@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>InvestNews — ข่าวการลงทุนหลายแหล่ง</title>
+  <title>KAVALON E0313 — Joint Venture Investment Info</title>
 
   <!-- นำเข้า LINE LIFF SDK -->
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
@@ -11,17 +11,17 @@
   <style>
     :root {
       --bg: #0b0f0e;
-      --surface: #141c18;
-      --surface-soft: #1b2621;
-      --text: #f0f4f1;
-      --muted: #9aa8a0;
+      --surface: #131b18;
+      --surface-soft: #1a2621;
+      --text: #f3f6f4;
+      --muted: #9caaa2;
       --primary: #10b981;
       --primary-dark: #059669;
-      --primary-soft: rgba(16, 185, 129, 0.15);
-      --border: #24332b;
-      --warning: #fbbf24;
-      --warning-soft: rgba(251, 191, 36, 0.15);
-      --shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
+      --primary-soft: rgba(16, 185, 129, 0.14);
+      --gold: #fbbf24;
+      --gold-soft: rgba(251, 191, 36, 0.14);
+      --border: #24342d;
+      --shadow: 0 14px 36px rgba(0, 0, 0, 0.45);
       --radius: 18px;
     }
 
@@ -34,526 +34,375 @@
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
         "Noto Sans Thai", sans-serif;
       color: var(--text);
-      background: var(--bg);
-    }
-
-    button,
-    input,
-    select {
-      font: inherit;
+      background: radial-gradient(circle at top right, #13251e 0%, var(--bg) 45%);
+      line-height: 1.65;
+      padding-bottom: 92px;
     }
 
     button {
+      font: inherit;
       cursor: pointer;
     }
 
-    a {
-      color: inherit;
-      text-decoration: none;
+    .container {
+      width: 100%;
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 20px 16px;
     }
 
-    .layout {
-      display: grid;
-      grid-template-columns: 250px minmax(0, 1fr);
-      min-height: 100vh;
-    }
-
-    .sidebar {
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      padding: 24px 18px;
-      color: #ffffff;
-      background: #080c0a;
-      border-right: 1px solid var(--border);
+    /* Top Bar */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 18px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: rgba(19, 27, 24, 0.85);
+      backdrop-filter: blur(12px);
     }
 
     .brand {
       display: flex;
       align-items: center;
       gap: 12px;
-      margin-bottom: 32px;
-      padding: 0 8px;
     }
 
-    .brand-logo {
+    .brand-badge {
       display: grid;
       place-items: center;
       width: 42px;
       height: 42px;
-      border-radius: 13px;
-      font-weight: 800;
-      color: #0b0f0e;
-      background: var(--primary);
-    }
-
-    .brand-name {
-      font-size: 18px;
-      font-weight: 800;
-    }
-
-    .brand-subtitle {
-      margin-top: 2px;
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .menu {
-      display: grid;
-      gap: 7px;
-    }
-
-    .menu-button {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      width: 100%;
-      padding: 12px 14px;
-      border: 0;
       border-radius: 12px;
-      color: var(--muted);
-      text-align: left;
-      background: transparent;
-      transition: all 0.2s;
+      font-weight: 800;
+      font-size: 14px;
+      color: #0b0f0e;
+      background: linear-gradient(135deg, #34d399, #10b981);
     }
 
-    .menu-button:hover,
-    .menu-button.active {
+    .brand-title {
+      font-size: 15px;
+      font-weight: 800;
       color: #ffffff;
-      background: var(--surface-soft);
     }
 
-    .sidebar-note {
-      position: absolute;
-      right: 18px;
-      bottom: 24px;
-      left: 18px;
-      padding: 15px;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      color: var(--muted);
-      background: var(--surface);
+    .brand-sub {
       font-size: 12px;
-      line-height: 1.6;
-    }
-
-    .main {
-      min-width: 0;
-    }
-
-    .topbar {
-      position: sticky;
-      z-index: 10;
-      top: 0;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      padding: 18px 30px;
-      border-bottom: 1px solid var(--border);
-      background: rgba(11, 15, 14, 0.85);
-      backdrop-filter: blur(12px);
-    }
-
-    .search-box {
-      position: relative;
-      flex: 1;
-      max-width: 720px;
-    }
-
-    .search-box input {
-      width: 100%;
-      padding: 13px 16px 13px 44px;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      outline: none;
-      color: var(--text);
-      background: var(--surface);
-      transition: all 0.2s;
-    }
-
-    .search-box input:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
-    }
-
-    .search-icon {
-      position: absolute;
-      top: 50%;
-      left: 16px;
-      transform: translateY(-50%);
       color: var(--muted);
     }
 
-    .primary-button,
-    .secondary-button {
-      padding: 11px 16px;
-      border-radius: 12px;
-      font-weight: 700;
-      transition: all 0.2s;
-    }
-
-    .primary-button {
-      border: 1px solid var(--primary);
-      color: #0b0f0e;
-      background: var(--primary);
-    }
-
-    .primary-button:hover {
-      background: #059669;
-    }
-
-    .secondary-button {
-      border: 1px solid var(--border);
-      color: var(--text);
-      background: var(--surface);
-    }
-
-    .secondary-button:hover {
-      background: var(--surface-soft);
-    }
-
-    .content {
-      width: 100%;
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 30px;
-    }
-
-    .hero {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 24px;
-      margin-bottom: 24px;
-    }
-
-    .hero h1 {
-      margin: 0;
-      font-size: clamp(25px, 4vw, 36px);
-      letter-spacing: -0.5px;
-    }
-
-    .hero p {
-      margin: 8px 0 0;
-      color: var(--muted);
-    }
-
-    .update-status {
-      white-space: nowrap;
-      padding: 9px 15px;
+    .slot-pill {
+      padding: 6px 12px;
       border-radius: 999px;
-      color: var(--primary);
-      background: var(--primary-soft);
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 700;
-      border: 1px solid rgba(16, 185, 129, 0.2);
+      color: var(--gold);
+      background: var(--gold-soft);
+      border: 1px solid rgba(251, 191, 36, 0.25);
+      white-space: nowrap;
     }
 
-    .status-dot {
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      margin-right: 6px;
-      border-radius: 50%;
-      background: var(--primary);
-      box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2);
+    /* Greeting Banner */
+    .greeting-box {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      margin-bottom: 18px;
+      border-radius: 14px;
+      background: var(--primary-soft);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      color: #a7f3d0;
+      font-size: 13px;
+      font-weight: 600;
     }
 
-    .dashboard {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 300px;
-      gap: 24px;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
+    /* Hero Card */
+    .hero-card {
+      padding: 24px 20px;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background: linear-gradient(160deg, #16231e 0%, #111815 100%);
+      box-shadow: var(--shadow);
       margin-bottom: 20px;
     }
 
-    .stat-card {
-      padding: 18px;
+    .eyebrow {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--primary);
+      background: var(--primary-soft);
+      margin-bottom: 12px;
+    }
+
+    .hero-card h1 {
+      margin: 0 0 10px;
+      font-size: clamp(21px, 4.5vw, 28px);
+      line-height: 1.35;
+      color: #ffffff;
+    }
+
+    .hero-lead {
+      margin: 0 0 18px;
+      color: #d1dbd5;
+      font-size: 14.5px;
+    }
+
+    .hero-lead strong {
+      color: #ffffff;
+    }
+
+    /* KPI Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .kpi-item {
+      padding: 14px;
+      border-radius: 14px;
+      background: rgba(11, 15, 14, 0.65);
       border: 1px solid var(--border);
-      border-radius: 16px;
-      background: var(--surface);
-      box-shadow: var(--shadow);
     }
 
-    .stat-label {
+    .kpi-label {
+      font-size: 12px;
       color: var(--muted);
-      font-size: 13px;
     }
 
-    .stat-number {
-      margin-top: 6px;
-      font-size: 26px;
+    .kpi-value {
+      margin-top: 4px;
+      font-size: 19px;
       font-weight: 800;
       color: #ffffff;
     }
 
-    .filters {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 9px;
+    .kpi-value.green {
+      color: var(--primary);
+    }
+
+    .kpi-value.gold {
+      color: var(--gold);
+    }
+
+    .kpi-note {
+      margin-top: 2px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* Section Card */
+    .card {
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
       margin-bottom: 18px;
     }
 
-    .filter-button {
-      padding: 8px 14px;
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      color: var(--muted);
-      background: var(--surface);
-      transition: all 0.2s;
-    }
-
-    .filter-button:hover,
-    .filter-button.active {
-      border-color: var(--primary);
-      color: var(--primary);
-      background: var(--primary-soft);
-    }
-
-    .news-list {
-      display: grid;
-      gap: 16px;
-    }
-
-    .news-group {
-      overflow: hidden;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      background: var(--surface);
-      box-shadow: var(--shadow);
-    }
-
-    .news-header {
-      display: flex;
-      gap: 16px;
-      padding: 20px;
-    }
-
-    .symbol {
-      display: grid;
-      flex: 0 0 54px;
-      place-items: center;
-      width: 54px;
-      height: 54px;
-      border-radius: 15px;
-      color: var(--primary);
-      background: var(--primary-soft);
-      font-size: 13px;
-      font-weight: 900;
-      border: 1px solid rgba(16, 185, 129, 0.2);
-    }
-
-    .news-heading {
-      min-width: 0;
-      flex: 1;
-    }
-
-    .news-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 7px;
-    }
-
-    .tag {
-      padding: 4px 10px;
-      border-radius: 7px;
-      color: var(--primary);
-      background: var(--primary-soft);
-      font-size: 11px;
-      font-weight: 700;
-    }
-
-    .important-tag {
-      color: var(--warning);
-      background: var(--warning-soft);
-    }
-
-    .news-title {
-      margin: 0;
-      font-size: 18px;
-      line-height: 1.45;
-      color: #ffffff;
-    }
-
-    .news-summary {
-      margin: 8px 0 0;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.7;
-    }
-
-    .watch-button {
-      flex: 0 0 auto;
-      width: 40px;
-      height: 40px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      color: var(--muted);
-      background: var(--surface-soft);
-      font-size: 19px;
-      transition: all 0.2s;
-    }
-
-    .watch-button.saved {
-      border-color: #fbbf24;
-      color: #fbbf24;
-      background: rgba(251, 191, 36, 0.15);
-    }
-
-    .source-list {
-      border-top: 1px solid var(--border);
-      background: var(--surface-soft);
-    }
-
-    .source-item {
-      display: grid;
-      grid-template-columns: 150px minmax(0, 1fr) 85px;
-      gap: 14px;
-      align-items: center;
-      padding: 15px 20px;
-      border-bottom: 1px solid var(--border);
-      transition: background 0.2s;
-    }
-
-    .source-item:hover {
-      background: rgba(255, 255, 255, 0.03);
-    }
-
-    .source-item:last-child {
-      border-bottom: 0;
-    }
-
-    .source-name {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 13px;
-      font-weight: 800;
-      color: #d1d5db;
-    }
-
-    .source-logo {
-      display: grid;
-      place-items: center;
-      width: 27px;
-      height: 27px;
-      border-radius: 8px;
-      color: #ffffff;
-      background: var(--primary-dark);
-      font-size: 10px;
-    }
-
-    .source-headline {
-      overflow: hidden;
-      color: #9ca3af;
-      font-size: 14px;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .source-time {
-      color: var(--muted);
-      font-size: 12px;
-      text-align: right;
-    }
-
-    .side-panel {
-      display: grid;
-      align-content: start;
-      gap: 18px;
-    }
-
-    .panel {
-      padding: 19px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      background: var(--surface);
-      box-shadow: var(--shadow);
-    }
-
-    .panel h2 {
+    .card-title {
       margin: 0 0 14px;
       font-size: 17px;
+      font-weight: 800;
       color: #ffffff;
-    }
-
-    .watchlist {
       display: flex;
-      flex-wrap: wrap;
+      align-items: center;
       gap: 8px;
     }
 
-    .stock-chip {
-      padding: 7px 12px;
-      border-radius: 9px;
-      color: var(--primary);
-      background: var(--primary-soft);
-      font-size: 12px;
-      font-weight: 800;
-      border: 1px solid rgba(16, 185, 129, 0.2);
-    }
-
-    .empty-text {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.6;
-    }
-
-    .topic-list {
+    /* Highlights List */
+    .benefit-list {
       display: grid;
       gap: 12px;
     }
 
-    .topic-row {
+    .benefit-item {
+      display: flex;
+      gap: 12px;
+      padding: 14px;
+      border-radius: 14px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+    }
+
+    .benefit-icon {
+      flex: 0 0 38px;
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+      background: var(--primary-soft);
+    }
+
+    .benefit-content h3 {
+      margin: 0 0 4px;
+      font-size: 14.5px;
+      color: #ffffff;
+    }
+
+    .benefit-content p {
+      margin: 0;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* Interactive Share Simulator */
+    .share-selector {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .share-btn {
+      padding: 10px 8px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface-soft);
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+      transition: all 0.2s;
+    }
+
+    .share-btn.active {
+      border-color: var(--primary);
+      color: #0b0f0e;
+      background: var(--primary);
+    }
+
+    .sim-result {
+      padding: 14px;
+      border-radius: 14px;
+      background: #0d1411;
+      border: 1px solid var(--border);
+      display: grid;
+      gap: 8px;
+      font-size: 13.5px;
+    }
+
+    .sim-row {
       display: flex;
       justify-content: space-between;
       gap: 12px;
-      color: #d1d5db;
-      font-size: 14px;
     }
 
-    .topic-count {
+    .sim-row span:first-child {
       color: var(--muted);
     }
 
-    .report-time {
-      margin-bottom: 14px;
-      padding: 13px;
+    .sim-row span:last-child {
+      font-weight: 700;
+      color: #ffffff;
+      text-align: right;
+    }
+
+    /* Terms List */
+    .term-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 10px;
+    }
+
+    .term-list li {
+      padding: 12px 14px;
       border-radius: 12px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      font-size: 13.5px;
+      color: #e5ece8;
+    }
+
+    .term-list strong {
       color: var(--primary);
-      background: var(--primary-soft);
-      font-size: 13px;
-      line-height: 1.6;
-      border: 1px solid rgba(16, 185, 129, 0.2);
     }
 
-    .full-width {
+    /* Action Buttons */
+    .action-stack {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .btn-line {
       width: 100%;
+      padding: 14px 16px;
+      border: 0;
+      border-radius: 14px;
+      font-size: 15px;
+      font-weight: 800;
+      color: #ffffff;
+      background: #06c755;
+      box-shadow: 0 8px 20px rgba(6, 199, 85, 0.25);
+      transition: transform 0.15s, background 0.2s;
     }
 
-    .empty-result {
-      padding: 50px 20px;
-      border: 1px dashed var(--border);
-      border-radius: var(--radius);
-      color: var(--muted);
-      text-align: center;
-      background: var(--surface);
+    .btn-line:hover {
+      background: #05b34c;
     }
 
+    .btn-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .btn-secondary {
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      color: var(--text);
+      background: var(--surface-soft);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* Sticky Bottom Bar */
+    .sticky-bar {
+      position: fixed;
+      z-index: 30;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 12px 16px;
+      background: rgba(11, 15, 14, 0.92);
+      border-top: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+    }
+
+    .sticky-inner {
+      max-width: 780px;
+      margin: 0 auto;
+      display: flex;
+      gap: 10px;
+    }
+
+    /* Modal */
     .modal-backdrop {
       position: fixed;
       z-index: 50;
       inset: 0;
       display: none;
       place-items: center;
-      padding: 20px;
-      background: rgba(0, 0, 0, 0.75);
+      padding: 16px;
+      background: rgba(0, 0, 0, 0.78);
       backdrop-filter: blur(8px);
     }
 
@@ -562,251 +411,211 @@
     }
 
     .modal {
-      width: min(650px, 100%);
+      width: min(560px, 100%);
       max-height: 85vh;
       overflow-y: auto;
-      padding: 24px;
+      padding: 22px;
       border-radius: 20px;
       border: 1px solid var(--border);
       background: var(--surface);
-      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.7);
       color: var(--text);
     }
 
-    .modal-header {
+    .modal-head {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 18px;
+      margin-bottom: 14px;
     }
 
-    .modal-header h2 {
+    .modal-head h2 {
       margin: 0;
-      color: #ffffff;
+      font-size: 18px;
     }
 
-    .close-button {
-      width: 38px;
-      height: 38px;
-      border: 1px solid var(--border);
+    .close-btn {
+      width: 34px;
+      height: 34px;
       border-radius: 10px;
+      border: 1px solid var(--border);
       background: var(--surface-soft);
       color: var(--text);
     }
 
-    .report-section {
-      margin-top: 18px;
-      padding-top: 18px;
-      border-top: 1px solid var(--border);
-    }
-
-    .report-section h3 {
-      margin: 0 0 10px;
-      font-size: 16px;
-      color: #ffffff;
-    }
-
-    .report-section ul {
-      margin: 0;
-      padding-left: 20px;
-      color: var(--muted);
-      line-height: 1.8;
-    }
-
     .disclaimer {
-      margin-top: 20px;
+      margin-top: 16px;
       padding: 12px;
-      border-radius: 10px;
-      color: var(--muted);
-      background: var(--surface-soft);
-      font-size: 12px;
-      line-height: 1.6;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.03);
       border: 1px solid var(--border);
+      font-size: 11.5px;
+      color: var(--muted);
     }
 
-    @media (max-width: 980px) {
-      .layout {
+    @media (max-width: 520px) {
+      .kpi-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .btn-row {
         grid-template-columns: 1fr;
-      }
-      .sidebar {
-        display: none;
-      }
-      .dashboard {
-        grid-template-columns: 1fr;
-      }
-      .side-panel {
-        grid-template-columns: repeat(3, 1fr);
-      }
-    }
-
-    @media (max-width: 720px) {
-      .topbar {
-        flex-wrap: wrap;
-        padding: 14px 16px;
-      }
-      .search-box {
-        flex-basis: 100%;
-        order: 2;
-      }
-      .content {
-        padding: 20px 16px;
-      }
-      .hero {
-        display: block;
-      }
-      .update-status {
-        display: inline-block;
-        margin-top: 14px;
-      }
-      .stats,
-      .side-panel {
-        grid-template-columns: 1fr;
-      }
-      .source-item {
-        grid-template-columns: 1fr auto;
-      }
-      .source-headline {
-        grid-column: 1 / -1;
-        grid-row: 2;
-        white-space: normal;
       }
     }
   </style>
 </head>
 
 <body>
-  <div class="layout">
-    <aside class="sidebar">
+  <div class="container">
+    <!-- Header -->
+    <header class="topbar">
       <div class="brand">
-        <div class="brand-logo">IN</div>
+        <div class="brand-badge">KV</div>
         <div>
-          <div class="brand-name">InvestNews</div>
-          <div class="brand-subtitle">Investment Intelligence</div>
+          <div class="brand-title">KAVALON E0313 • JV Partner</div>
+          <div class="brand-sub">พอร์ตคอนโดปล่อยเช่าติดรั้ว ม.กรุงเทพ</div>
         </div>
       </div>
+      <div class="slot-pill">เปิดรับ 2–3 สิทธิ์</div>
+    </header>
 
-      <nav class="menu">
-        <button class="menu-button">ข่าวล่าสุด</button>
-        <button class="menu-button">หุ้นที่ติดตาม</button>
-        <button class="menu-button" id="sidebarReportButton">รายงานประจำวัน</button>
-        <button class="menu-button">จัดการแหล่งข่าว</button>
-      </nav>
+    <!-- LIFF User Greeting -->
+    <div class="greeting-box" id="hello"></div>
 
-      <div class="sidebar-note">
-        ระบบต้นแบบใช้ข้อมูลจำลอง<br>
-        รอบอัปเดตที่แนะนำ: ทุก 15 นาที<br>
-        รายงานประจำวัน: เวลา 07:00 น.
-      </div>
-    </aside>
+    <!-- Hero Section -->
+    <section class="hero-card">
+      <span class="eyebrow">✨ โอกาสการลงทุนอสังหาฯ ทำเลแคมปัส</span>
+      <h1>ร่วมเป็นเจ้าของพอร์ตคอนโดปล่อยเช่าติดรั้ว ม.กรุงเทพ (โครงการ KAVALON)</h1>
+      <p class="hero-lead">
+        สวัสดีค่ะ ชวนมาร่วมเป็นหุ้นส่วนลงทุนห้องชุด <strong>E0313 ชั้น 3 (1 Bedroom Walk-in Closet 25.30 ตร.ม.)</strong> ห่างรั้ว ม.กรุงเทพ เพียง 100 เมตร ในราคาหน้าสัญญา <strong>1,980,000 บาท</strong> ที่ล็อกสิทธิ์ส่วนลด <strong>Cash Back สูงสุด 180,000 บาท</strong> ทำให้ต้นทุนห้องสุทธิเหลือเพียง <strong>1,800,000 บาท (71,146 บาท/ตร.ม.)</strong> ต่ำกว่าราคาตลาดในโครงการค่ะ
+      </p>
 
-    <main class="main">
-      <header class="topbar">
-        <div class="search-box">
-          <span class="search-icon">⌕</span>
-          <input
-            id="searchInput"
-            type="search"
-            placeholder="ค้นหาหุ้น บริษัท หรือหัวข้อข่าว เช่น PTT, ปันผล..."
-          >
+      <div class="kpi-grid">
+        <div class="kpi-item">
+          <div class="kpi-label">เงินลงทุนต่อ 1 สิทธิ์</div>
+          <div class="kpi-value green">50,000 บ.</div>
+          <div class="kpi-note">กองทุนรวม 4 สิทธิ์ (200,000 บ.)</div>
         </div>
-        <button class="secondary-button" id="refreshButton">อัปเดตข่าว</button>
-        <button class="primary-button" id="reportButton">รายงานวันนี้</button>
-      </header>
+        <div class="kpi-item">
+          <div class="kpi-label">คืนเงินต้นใน 60 วัน</div>
+          <div class="kpi-value gold">45,000 บ.</div>
+          <div class="kpi-note">เหลือทุนค้างจริง 5,000 บ./สิทธิ์</div>
+        </div>
+        <div class="kpi-item">
+          <div class="kpi-label">ค่าเช่าเป้าหมาย</div>
+          <div class="kpi-value">12,500 บ.</div>
+          <div class="kpi-note">ธีม Turnkey Creator Studio</div>
+        </div>
+        <div class="kpi-item">
+          <div class="kpi-label">สัดส่วนแบ่งกำไร</div>
+          <div class="kpi-value green">70 : 30</div>
+          <div class="kpi-note">ผู้ร่วมลงทุน 70% : ผู้บริหาร 30%</div>
+        </div>
+      </div>
+    </section>
 
-      <div class="content">
-        <section class="hero">
-          <div>
-            <h1>ข่าวการลงทุนวันนี้</h1>
-            <p>รวบรวมและจัดกลุ่มข่าวเหตุการณ์เดียวกันจากหลายแหล่ง</p>
+    <!-- Why Above-Average Returns -->
+    <section class="card">
+      <h2 class="card-title">💡 ทำไมดีลนี้ถึงสร้างผลตอบแทนเหนือค่าเฉลี่ย?</h2>
+      <div class="benefit-list">
+        <div class="benefit-item">
+          <div class="benefit-icon">💸</div>
+          <div class="benefit-content">
+            <h3>คืนเงินต้น 90% ภายใน 60 วันหลังโอน</h3>
+            <p>จากเงินลงทุน 50,000 บาท/สิทธิ์ จะได้รับเงินคืนจาก Cash Back โครงการทันที <strong>45,000 บาท/สิทธิ์</strong> ภายใน 60 วันหลังโอนกรรมสิทธิ์ เหลือเงินทุนค้างในระบบจริงเพียง <strong>5,000 บาท/สิทธิ์</strong> ค่ะ</p>
           </div>
-          <div class="update-status">
-            <span class="status-dot"></span>
-            <span id="updatedTime">กำลังโหลด...</span>
+        </div>
+
+        <div class="benefit-item">
+          <div class="benefit-icon">🏦</div>
+          <div class="benefit-content">
+            <h3>ใช้พลัง Leverage ดอกเบี้ยต่ำ</h3>
+            <p>ยื่นกู้ผ่านสินเชื่อโครงการบ้านคนละหลัง Plus (ธอส.) อัตราดอกเบี้ยพิเศษเฉลี่ย <strong>~2.75% ต่อปี</strong> (ค่างวดเบาๆ เพียง ~7,815 บาท/เดือน)</p>
           </div>
-        </section>
+        </div>
 
-        <div class="dashboard">
-          <section>
-            <div class="stats">
-              <article class="stat-card">
-                <div class="stat-label">ข่าวทั้งหมดวันนี้</div>
-                <div class="stat-number" id="totalNews">0</div>
-              </article>
-              <article class="stat-card">
-                <div class="stat-label">เหตุการณ์สำคัญ</div>
-                <div class="stat-number" id="importantNews">0</div>
-              </article>
-              <article class="stat-card">
-                <div class="stat-label">แหล่งข่าว</div>
-                <div class="stat-number" id="sourceCount">0</div>
-              </article>
-            </div>
+        <div class="benefit-item">
+          <div class="benefit-icon">🎬</div>
+          <div class="benefit-content">
+            <h3>สร้างความต่างหนีสงครามราคา</h3>
+            <p>อัปเกรดห้องเป็นธีม <strong>"Turnkey Creator Studio"</strong> เพิ่มเครื่องซักผ้าฝาหน้า ตู้เย็น 2 ประตู Smart TV ไมโครเวฟ และ Wi-Fi ส่วนตัว ตั้งค่าเช่าเป้าหมาย <strong>12,500 บาท/เดือน</strong> (สูงกว่าห้องเปล่าในตึก 2,500 บาท/เดือน)</p>
+          </div>
+        </div>
 
-            <div class="filters" id="filters"></div>
-            <div class="news-list" id="newsList"></div>
-          </section>
-
-          <aside class="side-panel">
-            <section class="panel">
-              <h2>หุ้นที่ติดตาม</h2>
-              <div class="watchlist" id="watchlist"></div>
-            </section>
-
-            <section class="panel">
-              <h2>หัวข้อที่มีข่าวมาก</h2>
-              <div class="topic-list" id="topicList"></div>
-            </section>
-
-            <section class="panel">
-              <h2>รายงานอัตโนมัติ</h2>
-              <div class="report-time">
-                จัดทำรายงานทุกวัน<br>
-                เวลา 07:00 น. และ 17:30 น.
-              </div>
-              <button class="primary-button full-width" id="sideReportButton">
-                ดูรายงานล่าสุด
-              </button>
-            </section>
-          </aside>
+        <div class="benefit-item">
+          <div class="benefit-icon">📈</div>
+          <div class="benefit-content">
+            <h3>กระแสเงินสดบวกตั้งแต่วันแรก</h3>
+            <p>หลังหักค่างวดธนาคาร ค่าส่วนกลาง อินเทอร์เน็ต และงบซ่อมบำรุง ยังมีกระแสเงินสดสุทธิเป็นบวก <strong>+18,828 บาท/ปี</strong> พร้อมเงินต้นที่ลดลงปีละกว่า <strong>41,136 บาท</strong> ค่ะ</p>
+          </div>
         </div>
       </div>
-    </main>
-  </div>
+    </section>
 
-  <!-- Modal รายงานประจำวัน พร้อมปุ่มแชร์ LINE -->
-  <div class="modal-backdrop" id="reportModal">
-    <div class="modal">
-      <div class="modal-header">
-        <h2>รายงานข่าวการลงทุนประจำวัน</h2>
-        <button class="close-button" id="closeModalButton">✕</button>
+    <!-- Interactive Simulator -->
+    <section class="card">
+      <h2 class="card-title">🧮 จำลองสัดส่วนการร่วมลงทุนของคุณ</h2>
+      <div class="share-selector">
+        <button class="share-btn active" data-shares="1">1 สิทธิ์ (50,000 บ.)</button>
+        <button class="share-btn" data-shares="2">2 สิทธิ์ (100,000 บ.)</button>
+        <button class="share-btn" data-shares="3">3 สิทธิ์ (150,000 บ.)</button>
       </div>
+      <div class="sim-result" id="simResult"></div>
+    </section>
 
-      <!-- ส่วนแสดงผลสถานะโปรไฟล์ LIFF -->
-      <div id="hello" style="margin-bottom: 12px; font-size: 13px; color: var(--primary); font-weight: 600;"></div>
+    <!-- Terms & Governance -->
+    <section class="card">
+      <h2 class="card-title">🤝 เงื่อนไขการร่วมลงทุนและความโปร่งใส</h2>
+      <ul class="term-list">
+        <li><strong>เงินลงทุน:</strong> 50,000 บาท / 1 สิทธิ์ (เปิดรับรวม 4 สิทธิ์ = กองทุนหมุนเวียน 200,000 บาท เพื่อใช้จ่ายวันโอนและตกแต่งห้องครบชุด)</li>
+        <li><strong>สัดส่วนแบ่งกำไร:</strong> ผู้ร่วมลงทุน <strong>70%</strong> : ผู้บริหารโครงการและเจ้าของวงเงินกู้ <strong>30%</strong></li>
+        <li><strong>ความโปร่งใสตรวจสอบได้:</strong> ทำสัญญา Joint Venture ถูกต้องตามกฎหมาย แสดงสำเนาสัญญาจะซื้อจะขาย สลิปการโอนเงิน และส่งรายงานบัญชีรายรับ-รายจ่ายให้ตรวจสอบทุกเดือนค่ะ</li>
+      </ul>
 
-      <p id="reportDate"></p>
-
-      <section class="report-section">
-        <h3>ข่าวสำคัญ</h3>
-        <ul id="reportImportant"></ul>
-      </section>
-
-      <section class="report-section">
-        <h3>หุ้นที่ติดตาม</h3>
-        <ul id="reportWatchlist"></ul>
-      </section>
-
-      <!-- ปุ่มแชร์ไปที่ LINE -->
-      <div class="report-section" style="padding-top: 14px;">
-        <button class="primary-button full-width" id="shareLineButton" style="background-color: #06C755; border-color: #06C755; color: #ffffff;">
-          💬 แชร์รายงานนี้ไปที่ LINE
+      <div class="action-stack">
+        <button class="btn-line" id="shareLineButton">
+          💬 ส่งการ์ดชวนร่วมลงทุนเข้าแชท LINE (Flex Message)
         </button>
+        <div class="btn-row">
+          <button class="btn-secondary" id="openModelButton">
+            📊 ดูรายละเอียด Financial Model
+          </button>
+          <button class="btn-secondary" id="copyPitchButton">
+            📋 คัดลอกข้อความประกาศแบบสั้น
+          </button>
+        </div>
       </div>
 
       <div class="disclaimer">
-        ข้อมูลนี้จัดทำขึ้นเพื่อสาธิตระบบรวบรวมข่าวเท่านั้น
-        ไม่ใช่คำแนะนำในการซื้อหรือขายหลักทรัพย์
+        หมายเหตุ: ตัวเลขผลตอบแทนเป็นการประมาณการตามสมมติฐานทางการเงิน (อัตราเข้าพัก 95% ค่าเช่า 12,500 บ./เดือน) เหมาะสำหรับการร่วมลงทุนในกลุ่มพาร์ทเนอร์และคนรู้จักเฉพาะกิจค่ะ
+      </div>
+    </section>
+  </div>
+
+  <!-- Sticky Bottom CTA -->
+  <div class="sticky-bar">
+    <div class="sticky-inner">
+      <button class="btn-line" id="stickyShareButton" style="padding: 12px;">
+        💬 แชร์ดีลนี้ให้เพื่อน / หุ้นส่วนใน LINE
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal: Financial Model & Contract Summary -->
+  <div class="modal-backdrop" id="modelModal">
+    <div class="modal">
+      <div class="modal-head">
+        <h2>📊 สรุปตัวเลข Financial Model & สัญญา</h2>
+        <button class="close-btn" id="closeModalButton">✕</button>
+      </div>
+      <ul class="term-list">
+        <li><strong>ข้อมูลห้องชุด:</strong> โครงการ KAVALON ห้อง E0313 ชั้น 3 แบบ 1 Bed Walk-in Closet (25.30 ตร.ม.) กำหนดโอนภายใน 31 มี.ค. 2570</li>
+        <li><strong>โครงสร้างเงินกองทุน 200,000 บ.:</strong> เงินดาวน์ 65,700 บ. + ค่าโอน/ส่วนกลาง/จดจำนอง 72,047 บ. + แต่งห้อง & เครื่องใช้ไฟฟ้าเพิ่ม 45,000 บ. + เงินสำรอง 17,253 บ.</li>
+        <li><strong>การคืนทุนระยะสั้น:</strong> รับ Cash Back 180,000 บ. ภายใน 60 วันหลังโอน คืนให้ผู้ร่วมลงทุนสิทธิ์ละ 45,000 บ. ทันที</li>
+        <li><strong>ประมาณการรายรับ-รายจ่ายต่อปี:</strong> รายได้ค่าเช่าสุทธิ 142,500 บ. - ค่าส่วนกลาง/เน็ต/ซ่อมบำรุง 29,892 บ. = กำไรดำเนินงาน (NOI) 112,608 บ./ปี หักค่างวด ธอส. 93,780 บ./ปี คงเหลือเงินสดสุทธิ +18,828 บ./ปี</li>
+      </ul>
+      <div class="action-stack">
+        <button class="btn-line" id="modalContactButton">
+          💬 สนใจจองสิทธิ์ / ทักแชทสอบถามเพิ่มเติม
+        </button>
       </div>
     </div>
   </div>
@@ -814,241 +623,191 @@
   <script>
     // --- ส่วน LIFF Initialization ---
     var LIFF_ID = '2011744697-Oz27SBaf';
-    (function(){
-      try{
-        liff.init({liffId:LIFF_ID}).then(function(){
-          if(liff.isLoggedIn()){
-            liff.getProfile().then(function(pf){
+    var LIFF_URL = 'https://liff.line.me/' + LIFF_ID;
+
+    (function () {
+      try {
+        liff.init({ liffId: LIFF_ID }).then(function () {
+          if (liff.isLoggedIn()) {
+            liff.getProfile().then(function (pf) {
               const helloEl = document.getElementById('hello');
-              if(helloEl) {
-                helloEl.textContent = 'สวัสดี ' + pf.displayName + ' - รายงานข่าวการลงทุนประจำวัน';
+              if (helloEl) {
+                helloEl.style.display = 'flex';
+                helloEl.textContent = 'สวัสดีค่ะคุณ ' + pf.displayName + ' ✨ ยินดีต้อนรับสู่ข้อมูลร่วมลงทุน KAVALON E0313 นะคะ';
               }
             });
           }
-        }).catch(function(){});
-      }catch(e){}
+        }).catch(function () {});
+      } catch (e) {}
     })();
 
-    // --- ข้อมูลข่าวจำลอง ---
-    const newsData = [
-      {
-        id: 1,
-        symbol: "PTT",
-        category: "ซื้อหุ้นคืน",
-        important: true,
-        title: "บอร์ด PTT อนุมัติแผนจำหน่ายหุ้นซื้อคืน",
-        summary:
-          "บริษัทกำหนดช่วงเวลาจำหน่ายหุ้นซื้อคืน พร้อมเปิดเผยรายละเอียดและเงื่อนไขที่เกี่ยวข้อง",
-        keywords: ["PTT", "พลังงาน", "ซื้อหุ้นคืน"],
-        sources: [
-          {
-            name: "InfoQuest",
-            shortName: "IQ",
-            headline: "บอร์ด PTT ไฟเขียวแผนจำหน่ายหุ้นซื้อคืน",
-            time: "10:35 น.",
-            url: "#"
-          },
-          {
-            name: "ตลาดหลักทรัพย์ฯ",
-            shortName: "SET",
-            headline: "รายงานมติคณะกรรมการเกี่ยวกับโครงการหุ้นซื้อคืน",
-            time: "10:22 น.",
-            url: "#"
-          },
-          {
-            name: "ผู้จัดการออนไลน์",
-            shortName: "MGR",
-            headline: "PTT เปิดรายละเอียดการจำหน่ายหุ้นซื้อคืน",
-            time: "09:58 น.",
-            url: "#"
-          }
-        ]
-      },
-      {
-        id: 2,
-        symbol: "ADVANC",
-        category: "ผลประกอบการ",
-        important: true,
-        title: "ADVANC รายงานผลประกอบการเติบโตจากรายได้บริการ",
-        summary:
-          "รายได้บริการโทรศัพท์เคลื่อนที่และอินเทอร์เน็ตสนับสนุนผลประกอบการของบริษัท",
-        keywords: ["ADVANC", "สื่อสาร", "งบการเงิน"],
-        sources: [
-          {
-            name: "สำนักข่าวอีไฟแนนซ์ไทย",
-            shortName: "EF",
-            headline: "ADVANC เปิดผลดำเนินงาน รายได้บริการเติบโต",
-            time: "09:40 น.",
-            url: "#"
-          },
-          {
-            name: "กรุงเทพธุรกิจ",
-            shortName: "BK",
-            headline: "จับตาผลประกอบการ ADVANC และทิศทางธุรกิจ",
-            time: "09:12 น.",
-            url: "#"
-          }
-        ]
-      },
-      {
-        id: 3,
-        symbol: "AOT",
-        category: "ท่องเที่ยว",
-        important: false,
-        title: "AOT รับปริมาณผู้โดยสารเพิ่มตามการฟื้นตัวของการเดินทาง",
-        summary:
-          "จำนวนผู้โดยสารระหว่างประเทศปรับตัวเพิ่มขึ้น ส่งผลเชิงบวกต่อรายได้ที่เกี่ยวข้องกับสนามบิน",
-        keywords: ["AOT", "สนามบิน", "ท่องเที่ยว"],
-        sources: [
-          {
-            name: "ประชาชาติธุรกิจ",
-            shortName: "PC",
-            headline: "ปริมาณผู้โดยสารเพิ่ม หนุนแนวโน้มรายได้ AOT",
-            time: "08:55 น.",
-            url: "#"
-          },
-          {
-            name: "ฐานเศรษฐกิจ",
-            shortName: "TH",
-            headline: "ท่องเที่ยวฟื้นตัว ดันจำนวนผู้ใช้บริการสนามบิน",
-            time: "08:30 น.",
-            url: "#"
-          }
-        ]
-      },
-      {
-        id: 4,
-        symbol: "KBANK",
-        category: "ธนาคาร",
-        important: false,
-        title: "KBANK เดินหน้าขยายบริการดิจิทัลสำหรับลูกค้าธุรกิจ",
-        summary:
-          "ธนาคารเพิ่มความสามารถของช่องทางดิจิทัล เพื่อรองรับธุรกรรมและบริการทางการเงินของภาคธุรกิจ",
-        keywords: ["KBANK", "ธนาคาร", "ดิจิทัล"],
-        sources: [
-          {
-            name: "InfoQuest",
-            shortName: "IQ",
-            headline: "KBANK เปิดแผนยกระดับบริการดิจิทัล",
-            time: "08:15 น.",
-            url: "#"
-          }
-        ]
-      },
-      {
-        id: 5,
-        symbol: "CPALL",
-        category: "ค้าปลีก",
-        important: false,
-        title: "CPALL รับแรงหนุนจากยอดขายและการบริโภคภายในประเทศ",
-        summary:
-          "แนวโน้มยอดขายสาขาเดิมและการบริโภคในประเทศเป็นปัจจัยที่ตลาดติดตาม",
-        keywords: ["CPALL", "ค้าปลีก", "บริโภค"],
-        sources: [
-          {
-            name: "ข่าวหุ้นธุรกิจ",
-            shortName: "KH",
-            headline: "CPALL รับปัจจัยบวกจากยอดขายในประเทศ",
-            time: "07:50 น.",
-            url: "#"
-          },
-          {
-            name: "กรุงเทพธุรกิจ",
-            shortName: "BK",
-            headline: "สำรวจแนวโน้มกลุ่มค้าปลีกและกำลังซื้อ",
-            time: "07:35 น.",
-            url: "#"
-          }
-        ]
-      }
-    ];
+    // --- เครื่องคำนวณผลตอบแทนตามจำนวนสิทธิ์ ---
+    function renderSimulation(shares) {
+      const invest = shares * 50000;
+      const cashback60d = shares * 45000;
+      const netCapital = shares * 5000;
+      const sharePct = ((shares / 4) * 70).toFixed(1);
+      const annualDiv = Math.round((18828.47 * 0.70 / 4) * shares);
+      const annualEquityGain = Math.round((41136.27 * 0.70 / 4) * shares);
 
-    const categories = [
-      "ทั้งหมด",
-      ...new Set(newsData.map((item) => item.category))
-    ];
-
-    let selectedCategory = "ทั้งหมด";
-    let searchText = "";
-    let savedSymbols = JSON.parse(
-      localStorage.getItem("investWatchlist") || '["PTT", "ADVANC"]'
-    );
-
-    const newsListElement = document.getElementById("newsList");
-    const filtersElement = document.getElementById("filters");
-    const watchlistElement = document.getElementById("watchlist");
-    const searchInput = document.getElementById("searchInput");
-
-    function escapeHTML(text) {
-      return String(text)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+      document.getElementById('simResult').innerHTML = `
+        <div class="sim-row">
+          <span>เงินลงทุนตั้งต้น (${shares} สิทธิ์)</span>
+          <span>${invest.toLocaleString()} บาท</span>
+        </div>
+        <div class="sim-row">
+          <span>รับเงินคืน Cash Back ภายใน 60 วัน</span>
+          <span style="color: var(--gold);">+${cashback60d.toLocaleString()} บาท (90%)</span>
+        </div>
+        <div class="sim-row">
+          <span>เงินทุนสุทธิที่วางค้างในระบบจริง</span>
+          <span>${netCapital.toLocaleString()} บาท</span>
+        </div>
+        <div class="sim-row">
+          <span>สัดส่วนแบ่งกำไรสุทธิของคุณ</span>
+          <span style="color: var(--primary);">${sharePct}% ของกำไรสุทธิโครงการ</span>
+        </div>
+        <div class="sim-row">
+          <span>ประมาณการปันผลเงินสด + ส่วนลดเงินต้น/ปี</span>
+          <span style="color: var(--primary);">~${(annualDiv + annualEquityGain).toLocaleString()} บาท/ปี</span>
+        </div>
+      `;
     }
 
-    // --- ฟังก์ชันกดปุ่มแชร์ไปที่ LINE เป็น Flex Message (กดที่กล่องแล้วเปิด LIFF) ---
-    document.getElementById('shareLineButton').addEventListener('click', function() {
+    document.querySelectorAll('.share-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.share-btn').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderSimulation(Number(btn.dataset.shares));
+      });
+    });
+    renderSimulation(1);
+
+    // --- ฟังก์ชันแชร์ Flex Message เข้า LINE ---
+    function shareFlexToLine() {
       try {
         if (!liff.isLoggedIn()) {
           liff.login();
           return;
         }
 
-        const dateText = document.getElementById('reportDate').textContent;
-        
-        // สร้างโครงสร้าง Flex Message พร้อม Action เปิด LIFF
         const flexMessage = {
           type: 'flex',
-          altText: 'รายงานข่าวการลงทุนประจำวัน - InvestNews',
+          altText: '✨ ชวนร่วมลงทุนคอนโดติดรั้ว ม.กรุงเทพ (KAVALON E0313) เปิดรับเพียง 2–3 สิทธิ์',
           contents: {
             type: 'bubble',
+            size: 'mega',
             header: {
               type: 'box',
               layout: 'vertical',
-              backgroundColor: '#141C18',
-              paddingAll: '16px',
+              backgroundColor: '#111A17',
+              paddingAll: '18px',
               contents: [
-                { type: 'text', text: 'INVESTNEWS REPORT', size: 'xxs', color: '#10B981', weight: 'bold' },
-                { type: 'text', text: 'รายงานข่าวการลงทุนประจำวัน', size: 'md', color: '#FFFFFF', weight: 'bold', margin: 'sm' },
-                { type: 'text', text: dateText, size: 'xxs', color: '#9AA3B2', margin: 'xs' }
+                {
+                  type: 'box',
+                  layout: 'horizontal',
+                  contents: [
+                    { type: 'text', text: 'EXCLUSIVE JV OPPORTUNITY', size: 'xxs', color: '#10B981', weight: 'bold', flex: 1 },
+                    { type: 'text', text: 'เปิดรับ 2–3 สิทธิ์', size: 'xxs', color: '#FBBF24', weight: 'bold', align: 'end' }
+                  ]
+                },
+                {
+                  type: 'text',
+                  text: 'ร่วมเป็นเจ้าของพอร์ตคอนโดปล่อยเช่าติดรั้ว ม.กรุงเทพ ✨',
+                  size: 'md',
+                  color: '#FFFFFF',
+                  weight: 'bold',
+                  wrap: true,
+                  margin: 'sm'
+                },
+                {
+                  type: 'text',
+                  text: 'โครงการ KAVALON ห้อง E0313 ชั้น 3 (25.30 ตร.ม.)',
+                  size: 'xs',
+                  color: '#9CA3AF',
+                  margin: 'xs'
+                }
               ]
             },
             body: {
               type: 'box',
               layout: 'vertical',
-              paddingAll: '16px',
               backgroundColor: '#0B0F0E',
-              contents: [
-                {
-                  type: 'text',
-                  text: '📊 กดเพื่อเปิดดูรายละเอียดและสรุปข่าวสารการลงทุนล่าสุดผ่านระบบ',
-                  weight: 'bold',
-                  size: 'sm',
-                  color: '#F0F4F1',
-                  wrap: true
-                }
-              ],
+              paddingAll: '18px',
+              spacing: 'md',
               action: {
                 type: 'uri',
-                label: 'Open LIFF',
-                uri: 'https://liff.line.me/2011744697-Oz27SBaf'
-              }
+                label: 'เปิดดูรายละเอียด JV',
+                uri: LIFF_URL
+              },
+              contents: [
+                {
+                  type: 'box',
+                  layout: 'horizontal',
+                  backgroundColor: '#16221D',
+                  cornerRadius: '12px',
+                  paddingAll: '12px',
+                  contents: [
+                    {
+                      type: 'box',
+                      layout: 'vertical',
+                      flex: 1,
+                      contents: [
+                        { type: 'text', text: 'ลงทุนเริ่มต้น', size: 'xxs', color: '#9CA3AF' },
+                        { type: 'text', text: '50,000 บ.', size: 'md', color: '#10B981', weight: 'bold', margin: 'xs' }
+                      ]
+                    },
+                    { type: 'separator', color: '#263830' },
+                    {
+                      type: 'box',
+                      layout: 'vertical',
+                      flex: 1,
+                      paddingStart: '12px',
+                      contents: [
+                        { type: 'text', text: 'คืนทุนใน 60 วัน', size: 'xxs', color: '#9CA3AF' },
+                        { type: 'text', text: '45,000 บ. (90%)', size: 'md', color: '#FBBF24', weight: 'bold', margin: 'xs' }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  type: 'box',
+                  layout: 'vertical',
+                  spacing: 'sm',
+                  contents: [
+                    { type: 'text', text: '💎 ต้นทุนสุทธิ 1.80 ลบ. (ได้ Cash Back 180,000 บ.)', size: 'xs', color: '#E5E7EB', wrap: true },
+                    { type: 'text', text: '🏦 กู้ ธอส. บ้านคนละหลัง Plus ดอกเบี้ย ~2.75%/ปี', size: 'xs', color: '#E5E7EB', wrap: true },
+                    { type: 'text', text: '🎬 แต่งธีม Creator Studio ตั้งค่าเช่า 12,500 บ./เดือน', size: 'xs', color: '#E5E7EB', wrap: true },
+                    { type: 'text', text: '📈 แบ่งกำไร 70% ผู้ร่วมลงทุน : 30% ผู้บริหารโครงการ', size: 'xs', color: '#10B981', weight: 'bold', wrap: true }
+                  ]
+                }
+              ]
             },
             footer: {
               type: 'box',
               layout: 'vertical',
-              backgroundColor: '#141C18',
-              paddingAll: '10px',
+              backgroundColor: '#111A17',
+              paddingAll: '14px',
+              spacing: 'sm',
               contents: [
-                { 
-                  type: 'text', 
-                  text: 'ข้อมูลนี้ไม่ใช่คำแนะนำในการซื้อหรือขายหลักทรัพย์', 
-                  size: 'xxs', 
-                  color: '#9AA3B2', 
-                  align: 'center', 
-                  wrap: true 
+                {
+                  type: 'button',
+                  style: 'primary',
+                  color: '#10B981',
+                  height: 'sm',
+                  action: {
+                    type: 'uri',
+                    label: 'ดูรายละเอียด & ตัวเลขลงทุน',
+                    uri: LIFF_URL
+                  }
+                },
+                {
+                  type: 'text',
+                  text: 'โปร่งใส ทำสัญญา JV ถูกต้อง พร้อมส่งรายงานบัญชีทุกเดือนค่ะ',
+                  size: 'xxs',
+                  color: '#9CA3AF',
+                  align: 'center',
+                  wrap: true
                 }
               ]
             }
@@ -1056,341 +815,74 @@
         };
 
         if (liff.isApiAvailable('shareTargetPicker')) {
-          liff.shareTargetPicker([flexMessage]).then(function(res) {
+          liff.shareTargetPicker([flexMessage]).then(function (res) {
             if (res) {
-              alert('แชร์รายงานไปยัง LINE สำเร็จแล้ว!');
+              alert('ส่งการ์ดชวนร่วมลงทุนไปยัง LINE เรียบร้อยแล้วค่ะ ✨');
             }
-          }).catch(function(error) {
+          }).catch(function (error) {
             alert('เกิดข้อผิดพลาดในการแชร์: ' + error);
           });
         } else {
-          alert('เบราว์เซอร์นี้ไม่รองรับฟังก์ชัน ShareTargetPicker กรุณาเปิดผ่านแอปพลิเคชัน LINE');
+          alert('กรุณาเปิดลิงก์นี้ผ่านแอปพลิเคชัน LINE เพื่อใช้งานปุ่มแชร์การ์ดนะคะ');
         }
       } catch (err) {
-        alert('กรุณาเข้าสู่ระบบผ่าน LINE ก่อนทำการแชร์');
+        alert('กรุณาเปิดผ่านแอป LINE เพื่อเข้าสู่ระบบก่อนแชร์ค่ะ');
       }
-    });
-    
-    function getFilteredNews() {
-      return newsData.filter((news) => {
-        const matchesCategory =
-          selectedCategory === "ทั้งหมด" ||
-          news.category === selectedCategory;
+    }
 
-        const searchableText = [
-          news.symbol,
-          news.category,
-          news.title,
-          news.summary,
-          ...news.keywords,
-          ...news.sources.map((source) => source.name),
-          ...news.sources.map((source) => source.headline)
-        ]
-          .join(" ")
-          .toLowerCase();
+    document.getElementById('shareLineButton').addEventListener('click', shareFlexToLine);
+    document.getElementById('stickyShareButton').addEventListener('click', shareFlexToLine);
 
-        return (
-          matchesCategory &&
-          searchableText.includes(searchText.trim().toLowerCase())
-        );
+    // --- ฟังก์ชันคัดลอกข้อความประกาศแบบสั้น ---
+    document.getElementById('copyPitchButton').addEventListener('click', function () {
+      const pitchText = `ชวนมาร่วมเป็นพาร์ทเนอร์ลงทุนคอนโดปล่อยเช่าติดรั้ว ม.กรุงเทพ (โครงการ KAVALON) ค่ะ ✨
+เปิดรับหุ้นส่วนร่วมลงทุน (Joint Venture) เพียง 2–3 สิทธิ์เท่านั้น (สิทธิ์ละ 50,000 บาท)
+
+ร่วมเป็นเจ้าของพอร์ตคอนโดปล่อยเช่าทำเลทอง ห่างรั้ว ม.กรุงเทพ เพียง 100 เมตร ห้อง E0313 ชั้น 3 แบบ 1 Bedroom Walk-in Closet 25.30 ตร.ม. ในต้นทุนราคาหน้าสัญญา 1,980,000 บาท ที่ล็อกสิทธิ์ส่วนลด Cash Back สูงสุด 180,000 บาท ทำให้ต้นทุนห้องสุทธิเหลือเพียง 1,800,000 บาท (71,146 บาท/ตร.ม.) ต่ำกว่าราคาตลาดในโครงการค่ะ
+
+ทำไมดีลนี้ถึงสร้างผลตอบแทนเหนือค่าเฉลี่ย?
+• คืนเงินต้น 90% ภายใน 60 วันหลังโอน: จากเงินลงทุน 50,000 บาท/สิทธิ์ รับเงินคืนจาก Cash Back โครงการทันที 45,000 บาท/สิทธิ์ เหลือเงินทุนค้างในระบบจริงเพียง 5,000 บาท/สิทธิ์
+• ใช้พลัง Leverage ดอกเบี้ยต่ำ: ยื่นกู้ผ่านสินเชื่อโครงการบ้านคนละหลัง Plus (ธอส.) อัตราดอกเบี้ยพิเศษเฉลี่ย ~2.75% ต่อปี (ค่างวด ~7,815 บาท/เดือน)
+• สร้างความต่างหนีสงครามราคา: อัปเกรดห้องเป็นธีม "Turnkey Creator Studio" เพิ่มเครื่องซักผ้าฝาหน้า ตู้เย็น 2 ประตู Smart TV ไมโครเวฟ และ Wi-Fi ส่วนตัว ตั้งค่าเช่าเป้าหมาย 12,500 บาท/เดือน (สูงกว่าห้องเปล่าในตึก 2,500 บาท/เดือน)
+• กระแสเงินสดบวกตั้งแต่วันแรก: หลังหักค่างวดธนาคาร ค่าส่วนกลาง อินเทอร์เน็ต และงบซ่อมบำรุง ยังมีกระแสเงินสดสุทธิเป็นบวก +18,828 บาท/ปี พร้อมเงินต้นที่ลดลงปีละกว่า 41,136 บาทค่ะ
+
+เงื่อนไขการร่วมลงทุน:
+• เงินลงทุน: 50,000 บาท / 1 สิทธิ์ (เปิดรับรวม 4 สิทธิ์ = กองทุนหมุนเวียน 200,000 บาท)
+• สัดส่วนแบ่งกำไร: ผู้ร่วมลงทุน 70% : ผู้บริหารโครงการและเจ้าของวงเงินกู้ 30%
+• ความโปร่งใส: ทำสัญญา Joint Venture ถูกต้องตามกฎหมาย แสดงสำเนาสัญญาจะซื้อจะขาย สลิปการโอนเงิน และรายงานบัญชีรายรับ-รายจ่ายทุกเดือนค่ะ
+
+ดูรายละเอียดเพิ่มเติมได้ที่: ${LIFF_URL}`;
+
+      navigator.clipboard.writeText(pitchText).then(() => {
+        alert('คัดลอกข้อความประกาศแบบสั้นเรียบร้อยแล้วค่ะ สามารถนำไปวางในแชท LINE ได้เลย 😊');
       });
-    }
-
-    function renderFilters() {
-      filtersElement.innerHTML = categories
-        .map(
-          (category) => `
-            <button
-              class="filter-button ${
-                selectedCategory === category ? "active" : ""
-              }"
-              data-category="${escapeHTML(category)}"
-            >
-              ${escapeHTML(category)}
-            </button>
-          `
-        )
-        .join("");
-
-      document.querySelectorAll(".filter-button").forEach((button) => {
-        button.addEventListener("click", () => {
-          selectedCategory = button.dataset.category;
-          renderFilters();
-          renderNews();
-        });
-      });
-    }
-
-    function renderNews() {
-      const filteredNews = getFilteredNews();
-
-      if (!filteredNews.length) {
-        newsListElement.innerHTML = `
-          <div class="empty-result">
-            ไม่พบข่าวที่ตรงกับคำค้นหรือหมวดหมู่ที่เลือก
-          </div>
-        `;
-        return;
-      }
-
-      newsListElement.innerHTML = filteredNews
-        .map((news) => {
-          const isSaved = savedSymbols.includes(news.symbol);
-
-          return `
-            <article class="news-group">
-              <div class="news-header">
-                <div class="symbol">${escapeHTML(news.symbol)}</div>
-
-                <div class="news-heading">
-                  <div class="news-meta">
-                    <span class="tag">${escapeHTML(news.category)}</span>
-                    <span class="tag">
-                      ${news.sources.length} แหล่งข่าว
-                    </span>
-                    ${
-                      news.important
-                        ? '<span class="tag important-tag">ข่าวสำคัญ</span>'
-                        : ""
-                    }
-                  </div>
-
-                  <h2 class="news-title">${escapeHTML(news.title)}</h2>
-                  <p class="news-summary">${escapeHTML(news.summary)}</p>
-                </div>
-
-                <button
-                  class="watch-button ${isSaved ? "saved" : ""}"
-                  data-symbol="${escapeHTML(news.symbol)}"
-                  aria-label="ติดตามหุ้น ${escapeHTML(news.symbol)}"
-                  title="เพิ่มหรือลบหุ้นที่ติดตาม"
-                >
-                  ${isSaved ? "★" : "☆"}
-                </button>
-              </div>
-
-              <div class="source-list">
-                ${news.sources
-                  .map(
-                    (source) => `
-                      <a
-                        class="source-item"
-                        href="${escapeHTML(source.url)}"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <div class="source-name">
-                          <span class="source-logo">
-                            ${escapeHTML(source.shortName)}
-                          </span>
-                          ${escapeHTML(source.name)}
-                        </div>
-                        <div class="source-headline">
-                          ${escapeHTML(source.headline)}
-                        </div>
-                        <div class="source-time">
-                          ${escapeHTML(source.time)}
-                        </div>
-                      </a>
-                    `
-                  )
-                  .join("")}
-              </div>
-            </article>
-          `;
-        })
-        .join("");
-
-      document.querySelectorAll(".watch-button").forEach((button) => {
-        button.addEventListener("click", () => {
-          toggleWatchlist(button.dataset.symbol);
-        });
-      });
-    }
-
-    function toggleWatchlist(symbol) {
-      if (savedSymbols.includes(symbol)) {
-        savedSymbols = savedSymbols.filter((item) => item !== symbol);
-      } else {
-        savedSymbols.push(symbol);
-      }
-
-      localStorage.setItem(
-        "investWatchlist",
-        JSON.stringify(savedSymbols)
-      );
-
-      renderNews();
-      renderWatchlist();
-    }
-
-    function renderWatchlist() {
-      if (!savedSymbols.length) {
-        watchlistElement.innerHTML = `
-          <div class="empty-text">
-            ยังไม่มีหุ้นที่ติดตาม กดรูปดาวบนการ์ดข่าวเพื่อเพิ่มหุ้น
-          </div>
-        `;
-        return;
-      }
-
-      watchlistElement.innerHTML = savedSymbols
-        .map(
-          (symbol) => `
-            <span class="stock-chip">${escapeHTML(symbol)}</span>
-          `
-        )
-        .join("");
-    }
-
-    function renderStats() {
-      const totalSources = new Set(
-        newsData.flatMap((news) =>
-          news.sources.map((source) => source.name)
-        )
-      ).size;
-
-      document.getElementById("totalNews").textContent =
-        newsData.reduce((sum, news) => sum + news.sources.length, 0);
-
-      document.getElementById("importantNews").textContent =
-        newsData.filter((news) => news.important).length;
-
-      document.getElementById("sourceCount").textContent = totalSources;
-    }
-
-    function renderTopics() {
-      const categoryCounts = newsData.reduce((result, news) => {
-        result[news.category] = (result[news.category] || 0) + 1;
-        return result;
-      }, {});
-
-      const sortedTopics = Object.entries(categoryCounts).sort(
-        (a, b) => b[1] - a[1]
-      );
-
-      document.getElementById("topicList").innerHTML = sortedTopics
-        .map(
-          ([topic, count]) => `
-            <div class="topic-row">
-              <span>${escapeHTML(topic)}</span>
-              <span class="topic-count">${count} เหตุการณ์</span>
-            </div>
-          `
-        )
-        .join("");
-    }
-
-    function updateTime() {
-      const time = new Intl.DateTimeFormat("th-TH", {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit"
-      }).format(new Date());
-
-      document.getElementById(
-        "updatedTime"
-      ).textContent = `อัปเดตล่าสุด ${time} น.`;
-    }
-
-    function openReport() {
-      document.getElementById("reportDate").textContent =
-        new Intl.DateTimeFormat("th-TH", {
-          dateStyle: "full",
-          timeStyle: "short"
-        }).format(new Date());
-
-      // ประกาศตัวแปร importantItems ก่อนใช้งานจริง
-      const importantItems = newsData.filter((news) => news.important);
-
-      document.getElementById("reportImportant").innerHTML =
-        importantItems.length
-          ? importantItems
-              .map(
-                (news) => `
-                  <li>
-                    <strong>${escapeHTML(news.symbol)}:</strong>
-                    ${escapeHTML(news.title)}
-                  </li>
-                `
-              )
-              .join("")
-          : "<li>ไม่พบข่าวสำคัญ</li>";
-
-      const trackedNews = newsData.filter((news) =>
-        savedSymbols.includes(news.symbol)
-      );
-
-      document.getElementById("reportWatchlist").innerHTML =
-        trackedNews.length
-          ? trackedNews
-              .map(
-                (news) => `
-                  <li>
-                    <strong>${escapeHTML(news.symbol)}:</strong>
-                    ${escapeHTML(news.title)}
-                  </li>
-                `
-              )
-              .join("")
-          : "<li>ไม่พบข่าวใหม่ของหุ้นที่ติดตาม</li>";
-
-      document.getElementById("reportModal").classList.add("open");
-    }
-
-    function closeReport() {
-      document.getElementById("reportModal").classList.remove("open");
-    }
-
-    searchInput.addEventListener("input", (event) => {
-      searchText = event.target.value;
-      renderNews();
     });
 
-    document.getElementById("refreshButton").addEventListener("click", () => {
-      const button = document.getElementById("refreshButton");
-      button.disabled = true;
-      button.textContent = "กำลังอัปเดต...";
-
-      setTimeout(() => {
-        updateTime();
-        button.disabled = false;
-        button.textContent = "อัปเดตข่าว";
-      }, 700);
+    // --- Modal Controls ---
+    const modal = document.getElementById('modelModal');
+    document.getElementById('openModelButton').addEventListener('click', () => modal.classList.add('open'));
+    document.getElementById('closeModalButton').addEventListener('click', () => modal.classList.remove('open'));
+    modal.addEventListener('click', (e) => {
+      if (e.target.id === 'modelModal') modal.classList.remove('open');
     });
 
-    [
-      "reportButton",
-      "sideReportButton",
-      "sidebarReportButton"
-    ].forEach((id) => {
-      document.getElementById(id).addEventListener("click", openReport);
-    });
-
-    document
-      .getElementById("closeModalButton")
-      .addEventListener("click", closeReport);
-
-    document
-      .getElementById("reportModal")
-      .addEventListener("click", (event) => {
-        if (event.target.id === "reportModal") {
-          closeReport();
+    document.getElementById('modalContactButton').addEventListener('click', () => {
+      try {
+        if (liff.isInClient()) {
+          liff.sendMessages([{
+            type: 'text',
+            text: 'สวัสดีค่ะ สนใจร่วมลงทุนโครงการ KAVALON E0313 ขอรับรายละเอียด Financial Model และสำเนาสัญญาเพิ่มเติมค่ะ'
+          }]).then(() => {
+            liff.closeWindow();
+          });
+        } else {
+          modal.classList.remove('open');
+          alert('สามารถทักแชทในห้อง LINE OA นี้เพื่อพูดคุยรายละเอียดเพิ่มเติมได้ทันทีเลยค่ะ 😊');
         }
-      });
-
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") {
-        closeReport();
+      } catch (e) {
+        modal.classList.remove('open');
       }
     });
-
-    renderFilters();
-    renderNews();
-    renderWatchlist();
-    renderStats();
-    renderTopics();
-    updateTime();
   </script>
 </body>
 </html>
